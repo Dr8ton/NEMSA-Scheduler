@@ -1,0 +1,22 @@
+{
+  "name": "nemsa-scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dr8ton/NEMSA-Scheduler.git"
+  },
+  "author": "Dr8ton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dr8ton/NEMSA-Scheduler/issues"
+  },
+  "homepage": "https://github.com/Dr8ton/NEMSA-Scheduler#readme",
+  "dependencies": {
+    "puppeteer": "^1.12.2"
+  }
+}
