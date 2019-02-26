@@ -30,3 +30,7 @@ let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrys
     await page.select('#ddlRegion', '9');
 })();
 
+let d = new Date();
+console.log('d = ' + d); 
+let nextYear = new Date(d.getFullYear()+1, d.getMonth(), d.getDay());
+console.log('nextYear = ' + nextYear);
