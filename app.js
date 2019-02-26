@@ -2,12 +2,15 @@
 
 const puppeteer = require('puppeteer');
 
-let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompany.aspx?ReturnUrl=%2fCrewScheduler%2fdefault.aspx';
+//let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompany.aspx?ReturnUrl=%2fCrewScheduler%2fdefault.aspx';
+let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/Main.aspx'; 
+let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
+
 (async () => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.setViewport({ width: 1920, height: 926 });
-    await page.goto(crewSchedulerURL);
+    await page.setViewport({ width: 900, height: 926 });
+    await page.goto(generalReportURL);
 
 
     //main login
@@ -17,7 +20,13 @@ let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompan
 
     await page.click('#btnLogin');  
 
-     const f = await page.frames();
-    console.log(f);
-    //await browser.close();
+//find and click general report
+
+
+    await page.waitForSelector('#ddlReport');
+    await page.select('#ddlReport', '313');
+
+    await page.waitForSelector('#ddlRegion');
+    await page.select('#ddlRegion', '9');
 })();
+
