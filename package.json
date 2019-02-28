@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Dr8ton/NEMSA-Scheduler#readme",
   "dependencies": {
+    "exceljs": "^1.7.0",
     "puppeteer": "^1.12.2"
   }
 }
