@@ -1,17 +1,28 @@
 
-import Excel from 'exceljs';
+var Excel = require('exceljs');
 
-const book = [];
-workbook.getWorksheet(
-    ( sheet => {
-  const sheet = [];
-  worksheet.eachRow(row => {
-    sheet.push(row.values);
-  });
-book.push(sheet);
-});
+var workbook = new Excel.Workbook();
+console.log(workbook); 
+var worksheet = workbook.getWorksheet(0);
 
-https://github.com/exceljs/exceljs#access-worksheets
+//workbook.eachSheet(function(worksheet, sheetId) {
+//    console.log(sheetId.name)
+//    // ...
+//});
+//workbook.getWorksheet(
+//    ( sheet => {
+//  const sheet = [];
+//  worksheet.eachRow(row => {
+//    sheet.push(row.values);
+//  });
+//book.push(sheet);
+//});
+
+//worksheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
+//    console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
+//});
+
+
 
 // shifts['shiftID'] = row_values[0]
 // shifts['shiftName'] = row_values[1]
