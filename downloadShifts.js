@@ -1,6 +1,7 @@
 'use strict';
 
 const puppeteer = require('puppeteer');
+require('dotenv').config();
 
 //let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompany.aspx?ReturnUrl=%2fCrewScheduler%2fdefault.aspx';
 let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/Main.aspx'; 
@@ -14,9 +15,11 @@ let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrys
 
 
     //main login
-    await page.type('#tbCompany', 'acadian');
-    await page.type('#tbUserName', '020780');
-    await page.type('#tbPassword', '1986DraytonKittel');
+    var credentials = process.env.CREWSCHEDULER_CREDENTIALS; 
+    console.log(credentials);
+    await page.type('#tbCompany', process.env.CREWSCHEDULER_CREDENTIALS.company);
+    await page.type('#tbUserName', process.env.CREWSCHEDULER_CREDENTIALS.login);
+    await page.type('#tbPassword', process.env.CREWSCHEDULER_CREDENTIALS.password);
 
     await page.click('#btnLogin');  
 
