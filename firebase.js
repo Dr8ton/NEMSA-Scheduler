@@ -25,9 +25,9 @@ require("firebase/firestore");
  * @param {string} num: employee number as STRING. must include leading zero. 
  * @param {string} first: employee's first name
  * @param {string} last: employee's last name
- * @param {boolean} active: whether or not the employee is active
+ * @param {boolean} active: is this an active prector
  * 
- * @returns {number}
+ * @returns {?} TODO: what does this method return???
  */
 function addParamedicPreceptor(num, first, last, active){
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics');
@@ -37,15 +37,27 @@ function addParamedicPreceptor(num, first, last, active){
         lastName: last,
         active: active
     };
-
-
-  
-  
-  var setMedic = docRef.doc(num).set(data)
+    
+    var setMedic = docRef.doc(num).set(data)
     .then(console.log(setMedic));
-};
+}
+
+function getParamedicPreceptors(employeeId){
+    var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);
+var getDoc = docRef.get()
+  .then(doc => {
+    if (!doc.exists) {
+      console.log('No such document!');
+    } else {
+      console.log('Document data:', doc);
+    }
+  })
+  .catch(err => {
+    console.log('Error getting document', err);
+  });
+}
 
 
 
-addParamedicPreceptor('987654', 'drayton', 'bruch', true);
 
+getParamedicPreceptors('020780');
