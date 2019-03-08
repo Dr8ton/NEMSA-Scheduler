@@ -1,10 +1,9 @@
-
+// DOCs - https://firebase.google.com/docs/reference/js/?authuser=0
 const firebase = require("firebase");
 // Required for side-effects
 require("firebase/firestore");
 
 
-// TODO: add firestore service here.
   var config = {
     apiKey: "AIzaSyAt79Jd_GIWsjGKBJkX4nRjd0AlmVfkS2Y",
     authDomain: "nemsa-6c408.firebaseapp.com",
@@ -35,29 +34,75 @@ function addParamedicPreceptor(num, first, last, active){
     var data = {
         firstName: first, 
         lastName: last,
-        active: active
+        active: true
     };
     
     var setMedic = docRef.doc(num).set(data)
     .then(console.log(setMedic));
 }
 
-function getParamedicPreceptors(employeeId){
-    var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);
-var getDoc = docRef.get()
-  .then(doc => {
-    if (!doc.exists) {
-      console.log('No such document!');
-    } else {
-      console.log('Document data:', doc);
-    }
-  })
-  .catch(err => {
-    console.log('Error getting document', err);
-  });
+/**
+ * returns an ACTIVE Paramedic preceptor. 
+ * It is on the user to check to make sure the preceptor is active.
+ * 
+ * @param {string} employeeId: employee number as STRING. must include leading zero. 
+ * 
+ * @returns {object} returns object that is in preceptor docuemtent ex: {active: TRUE, firstName: "John", lastName: "Smith"} 
+ * If no preceptor found then returns undefinded. 
+ */
+function getParamedicPreceptor(employeeId){
+    var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);  
+
+    
+    
+   docRef.get().then(function(doc) {
+        if (doc.exists) {
+            return doc.data();
+        } else {
+            // doc.data() will be undefined in this case
+            return undefined; 
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
+}
+
+/**
+ * returns an ACTIVE EMT preceptor. 
+ * It is on the user to check to make sure the preceptor is active.
+ * 
+ * @param {string} employeeId: employee number as STRING. must include leading zero. 
+ * 
+ * @returns {object} returns object that is in preceptor docuemtent ex: {active: TRUE, firstName: "John", lastName: "Smith"} 
+ * If no preceptor found then returns undefinded. 
+ */
+function getEmtPreceptor(employeeId){
+    var docRef = db.collection('northshore').doc('preceptors').collection('emts').doc(employeeId);  
+    
+   docRef.get().then(function(doc) {
+        if (doc.exists) {
+            return doc.data();
+        } else {
+            // doc.data() will be undefined in this case
+            return undefined; 
+        }
+    }).catch(function(error) {
+        console.log("Error getting document:", error);
+    });
 }
 
 
+function getAllParamedicPreceptors(){
+    var medicRef = db.collection('northshore').doc('preceptors').collection('emts');
+    var allMedics = medicRef.get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          console.log(doc.id, '=>', doc.data());
+        });
+      })
+      .catch(err => {
+        console.log('Error getting documents', err);
+      });
 
-
-getParamedicPreceptors('020780');
+}
+getAllParamedicPreceptors();
