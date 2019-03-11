@@ -3,7 +3,6 @@ const firebase = require("firebase");
 // Required for side-effects
 require("firebase/firestore");
 
-
   var config = {
     apiKey: "AIzaSyAt79Jd_GIWsjGKBJkX4nRjd0AlmVfkS2Y",
     authDomain: "nemsa-6c408.firebaseapp.com",
@@ -28,7 +27,7 @@ require("firebase/firestore");
  * 
  * @returns {?} TODO: what does this method return???
  */
-function addParamedicPreceptor(num, first, last, active){
+function addParamedicPreceptor(num: string, first: string, last: string, active: boolean){
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics');
 
     var data = {
