@@ -27,7 +27,7 @@ require("firebase/firestore");
  * 
  * @returns {?} TODO: what does this method return???
  */
-function addParamedicPreceptor(num: string, first: string, last: string, active: boolean){
+export function addParamedicPreceptor(num: string, first: string, last: string, active: boolean){
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics');
 
     var data = {
@@ -37,7 +37,6 @@ function addParamedicPreceptor(num: string, first: string, last: string, active:
     };
     
     var setMedic = docRef.doc(num).set(data)
-    .then(console.log(setMedic));
 }
 
 /**
@@ -49,17 +48,18 @@ function addParamedicPreceptor(num: string, first: string, last: string, active:
  * @returns {object} returns object that is in preceptor docuemtent ex: {active: TRUE, firstName: "John", lastName: "Smith"} 
  * If no preceptor found then returns undefinded. 
  */
-function getParamedicPreceptor(employeeId){
+export function getParamedicPreceptor(employeeId){
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);  
 
     
     
    docRef.get().then(function(doc) {
         if (doc.exists) {
+            console.log(doc.data());
             return doc.data();
         } else {
             // doc.data() will be undefined in this case
-            return undefined; 
+            return 'Doc not found'; 
         }
     }).catch(function(error) {
         console.log("Error getting document:", error);
@@ -75,7 +75,7 @@ function getParamedicPreceptor(employeeId){
  * @returns {object} returns object that is in preceptor docuemtent ex: {active: TRUE, firstName: "John", lastName: "Smith"} 
  * If no preceptor found then returns undefinded. 
  */
-function getEmtPreceptor(employeeId){
+export function getEmtPreceptor(employeeId){
     var docRef = db.collection('northshore').doc('preceptors').collection('emts').doc(employeeId);  
     
    docRef.get().then(function(doc) {
@@ -91,8 +91,8 @@ function getEmtPreceptor(employeeId){
 }
 
 
-function getAllParamedicPreceptors(){
-    var medicRef = db.collection('northshore').doc('preceptors').collection('emts');
+export function getAllParamedicPreceptors(){
+    var medicRef = db.collection('northshore').doc('preceptors').collection('paramedics');
     var allMedics = medicRef.get()
       .then(snapshot => {
         snapshot.forEach(doc => {
@@ -104,4 +104,39 @@ function getAllParamedicPreceptors(){
       });
 
 }
-getAllParamedicPreceptors();
+
+
+/**
+ * Summary. returns all preceptors (EMT and P) that are active.
+ * 
+ * Description. searches the DB and returns an array of employee numbers as strings from preceptors that are active.
+ * 
+ * @returns {string[]}. returns an array of strings that are active preceptors. 
+ */
+ export async function getAllActivePreceptors(){
+    var medicRef = await db.collection('northshore').doc('preceptors').collection('paramedics');
+    var p = [];
+    var query = await medicRef.where('active', '==', true).get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          console.log('No matching documents.');
+          return;
+        }
+    
+        snapshot.forEach(doc => {
+          console.log(doc.id, '=>', doc.data());
+          p.push(doc.data());
+        });
+      })
+      .catch(err => {
+        console.log('Error getting documents', err);
+      });
+    return p; 
+}
+
+export function logIt(message: string){
+    console.log(message);
+}
+
+let d = getParamedicPreceptor('020780');
+console.log(d);

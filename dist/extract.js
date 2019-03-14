@@ -1,52 +1,72 @@
+var fb = require("./firebase.js");
 var xlsx = require('node-xlsx').default;
 const workSheetsFromFile = xlsx.parse(`Daily.xlsx`);
-console.log(workSheetsFromFile[0].data[2][16]);
+let dataFromReport = workSheetsFromFile[0].data;
+let shifts = [];
+//dataFromReport.forEach((e) => {
+//    if(isSprintTruck(e[10])){
+//        continue;
+//    }
+//    
+//    if(crewOne || crewTwo are preceptors){
+//        Append to shifts
+//    }
+//    
+//    
+//    });
 // TODO: work the spreadsheet
-//'SchedShiftID',0
-//  'ShiftName',1
-//  'LocationCode',2
-//  'ShiftDate',3
-//  'StartTime',4
-//  'EndTime',5
-//  'Notes',6
-//  'FreeTextSlot',7
-//  'Status',8
-//  'HasVehicle',9
-//  'PlannedRes1',10
-//  'ActualRes1',11
-//  'PayrollCode1',12
-//  'ApprovedBy1',13
-//  'SplitText1',14
-//  'PlannedRes2',15
-//  'ActualRes2',16
-//  'PayrollCode2',17
-//  'ApprovedBy2',18
-//  'SplitText2',19
-//  'PlannedRes3',20
-//  'ActualRes3',21
-//  'PayrollCode3',22
-//  'ApprovedBy3',23
-//  'SplitText3',24
-//  'PlannedRes4',25
-//  'ActualRes4',26
-//  'PayrollCode4',27
-//  'ApprovedBy4',28
-//  'SplitText4',29
-//  'PlannedRes5',30
-//  'ActualRes5',31
-//  'PayrollCode5',32
-//  'ApprovedBy5',33
-//  'SplitText5',34
-//  'SlotCount',35
-//  'c1optional',36
-//  'c2optional',37
-//  'c3optional',38
-//  'c4optional',39
-//  'c5optional' ]38
+//'SchedShiftID',0, unique ID of shift
+//  'ShiftName',1, truck full name
+//  'LocationCode',2 station
+//  'ShiftDate',3 date but not time of start or finish
+//  'StartTime',4 DTG that shift starts
+//  'EndTime',5 DTG that the shift ends
+//  'Notes',6 STUDENT/RIDER: ${student}
+//  PlannedRes1, 10 truck number 
+//  'PlannedRes2',15, crewOne
+//  'ActualRes2',16 replacedOne
+//  'PlannedRes3',20, crewTwo
+//  'ActualRes3',21, replacedTwo
+/**
+ * Summary. Checks for acitve PARAMEDIC preceptor.
+ *
+ * Description. Not all employees are preceptors and not all preceptors are available to have students. This checks against the list of PARAMEDIC preceptors to see if they are both a PARAMEDIC preceptor and active.
+ *
+ * @param {string} employeeNumber: employee's number from the schedule.
+ *
+ * @returns {boolean} true if the employee is an active PARAMEDIC preceptor. FALSE if the employee is not BOTH a PARAMEDIC preceptor and active.
+ */
 function isActiveParamedicPreceptor() {
 }
+/**
+ * Summary. Checks for acitve EMT preceptor.
+ *
+ * Description. Not all employees are EMT preceptors and not all EMT preceptors are available to have students. This checks against the list of EMT preceptors to see if they are both an EMT preceptor and active.
+ *
+ * @param {string} employeeNumber: employee's number from the schedule.
+ *
+ * @returns {boolean} true if the employee is an active EMT preceptor. FALSE if the employee is not BOTH an EMT preceptor and active.
+*/
 function isActiveEMTPreceptor() {
 }
-function isSprintTruck() {
+/**
+ * Summary. Checks to see if the truck on shift is a sprint truck.
+ *
+ * Description. Sprint trucks are not transporting units and therefore are typically not allow to carry students.
+ *
+ * @param {string} num: truck unit number.
+ *
+ * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck.
+ */
+function isSprintTruck(truckNumber) {
+    //TODO: add this to DB so that this can scale to other areas
+    let sprintTrucks = [
+        "221",
+        "219",
+        "226",
+        "227"
+    ];
+    return sprintTrucks.includes(truckNumber);
 }
+console.log();
 //# sourceMappingURL=extract.js.map

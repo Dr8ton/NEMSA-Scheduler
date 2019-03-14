@@ -1,13 +1,5 @@
 var fb = require("./firebase.js");
 require('dotenv').config();
 
-/*
-- down load report
-- extract report 
-    - filter for 
-        - only preceptors 
-        - not supervisor trucks
-    - update DB 
-        -how does the DB react to updatess
-        - what does it return after an update request
-*/
+let drayton = fb.getParamedicPreceptor('020780');
+console.log(drayton);
