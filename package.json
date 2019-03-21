@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.0",
+    "@types/firebase-client": "^0.1.32",
     "@types/jquery": "^3.3.29",
     "@types/node": "^11.11.0",
     "@types/node-xlsx": "^0.12.1",

@@ -55,7 +55,6 @@ function getParamedicPreceptor(employeeId) {
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);
     docRef.get().then(function (doc) {
         if (doc.exists) {
-            console.log(doc.data());
             return doc.data();
         }
         else {
@@ -137,6 +136,13 @@ function logIt(message) {
     console.log(message);
 }
 exports.logIt = logIt;
-let d = getAllActivePreceptors();
-console.log(d);
+function process_tasks(employeeId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let docRef = yield db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);
+        let snapshot = yield docRef.get();
+        let final = snapshot.data();
+        return final;
+    });
+}
+exports.process_tasks = process_tasks;
 //# sourceMappingURL=firebase.js.map

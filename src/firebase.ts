@@ -10,7 +10,7 @@ require("firebase/firestore");
     projectId: "nemsa-6c408",
     storageBucket: "nemsa-6c408.appspot.com",
     messagingSenderId: "512173906413"
-  };
+  }
   firebase.initializeApp(config); 
   
   var db = firebase.firestore();
@@ -50,12 +50,9 @@ export function addParamedicPreceptor(num: string, first: string, last: string, 
  */
 export function getParamedicPreceptor(employeeId){
     var docRef = db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);  
-
-    
-    
-   docRef.get().then(function(doc) {
+   
+    docRef.get().then(function(doc) {
         if (doc.exists) {
-            console.log(doc.data());
             return doc.data();
         } else {
             // doc.data() will be undefined in this case
@@ -65,6 +62,8 @@ export function getParamedicPreceptor(employeeId){
         console.log("Error getting document:", error);
     });
 }
+
+
 
 /**
  * returns an ACTIVE EMT preceptor. 
@@ -105,7 +104,6 @@ export function getAllParamedicPreceptors(){
 
 }
 
-
 /**
  * Summary. returns all preceptors (EMT and P) that are active.
  * 
@@ -138,5 +136,12 @@ export function logIt(message: string){
     console.log(message);
 }
 
-let d = getParamedicPreceptor('020780');
-console.log(d);
+
+
+export async function process_tasks(employeeId: string) {
+  let docRef = await db.collection('northshore').doc('preceptors').collection('paramedics').doc(employeeId);
+  let snapshot = await docRef.get(); 
+   let final = snapshot.data();
+   return final; 
+}
+
