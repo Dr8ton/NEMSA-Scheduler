@@ -1,13 +1,13 @@
 'use strict';
-
-const puppeteer = require('puppeteer');
 require('dotenv').config();
+const puppeteer = require('puppeteer');
+
 
 //let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompany.aspx?ReturnUrl=%2fCrewScheduler%2fdefault.aspx';
 let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/Main.aspx'; 
 let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
-(async () => {
+export async function getShiftExcelFile(){
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({ width: 900, height: 926 });
@@ -17,9 +17,9 @@ let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrys
     //main login
     var credentials = process.env.CREWSCHEDULER_CREDENTIALS; 
     console.log(credentials);
-    await page.type('#tbCompany', process.env.CREWSCHEDULER_CREDENTIALS.company);
-    await page.type('#tbUserName', process.env.CREWSCHEDULER_CREDENTIALS.login);
-    await page.type('#tbPassword', process.env.CREWSCHEDULER_CREDENTIALS.password);
+    await page.type('#tbCompany', process.env.CREWSCHEDULER_COMPANY);
+    await page.type('#tbUserName', process.env.CREWSCHEDULER_LOGIN);
+    await page.type('#tbPassword', process.env.CREWSCHEDULER_PASSWORD);
 
     await page.click('#btnLogin');  
 
@@ -53,7 +53,8 @@ let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrys
 
     const response = await page.waitForNavigation({waitUntil:'networkidle2'});
     console.log("load finished")
+    browser.close(); 
 
-})();
+};
 
 

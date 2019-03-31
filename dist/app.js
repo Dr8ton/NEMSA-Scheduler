@@ -15,14 +15,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const firebase = __importStar(require("./firebase"));
+const downloadShifts = __importStar(require("./downloadShifts"));
 // env file 
 require('dotenv').config();
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        let drayton = yield firebase.process_tasks('020780');
-        console.log(drayton);
+        downloadShifts.getShiftExcelFile();
     });
+}
+function test() {
 }
 main();
 //# sourceMappingURL=app.js.map

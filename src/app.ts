@@ -1,15 +1,15 @@
 import * as firebase from "./firebase"; 
-
+import  * as downloadShifts from "./downloadShifts";
 // env file 
 require('dotenv').config();
 
 async function  main(){
-    let drayton = await firebase.process_tasks('020780');
-    console.log(drayton);
+    downloadShifts.getShiftExcelFile(); 
 }
 
 
-
+function test(){
+}
 
 
 

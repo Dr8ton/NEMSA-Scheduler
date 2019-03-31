@@ -28,7 +28,7 @@
     "@types/jquery": "^3.3.29",
     "@types/node": "^11.11.0",
     "@types/node-xlsx": "^0.12.1",
-    "@types/puppeteer": "^1.12.2",
+    "@types/puppeteer": "^1.12.3",
     "typescript": "^3.3.3333"
   }
 }
