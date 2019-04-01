@@ -42,7 +42,6 @@ export async function getShiftExcelFile(){
     await page.click('#btnExport');
     console.log('export btn clicked');
     // TODO: return file name/path; 
-    //browser.close()
     return browser;  
     
     // TODO: return file name/path; 
