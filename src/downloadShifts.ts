@@ -2,10 +2,7 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
 
-
-//let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/LoginCompany.aspx?ReturnUrl=%2fCrewScheduler%2fdefault.aspx';
-let crewSchedulerURL = 'https://scheduling.acadian.com/CrewScheduler/Main.aspx'; 
-let generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
+const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
 export async function getShiftExcelFile(){
     const browser = await puppeteer.launch({ headless: false });
@@ -13,8 +10,6 @@ export async function getShiftExcelFile(){
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);
 
-
-    //main login
     var credentials = process.env.CREWSCHEDULER_CREDENTIALS; 
     console.log(credentials);
     await page.type('#tbCompany', process.env.CREWSCHEDULER_COMPANY);
@@ -22,9 +17,6 @@ export async function getShiftExcelFile(){
     await page.type('#tbPassword', process.env.CREWSCHEDULER_PASSWORD);
 
     await page.click('#btnLogin');  
-
-//find and click general report
-
 
     await page.waitForSelector('#ddlReport');
     await page.select('#ddlReport', '313');
@@ -50,11 +42,11 @@ export async function getShiftExcelFile(){
     await page.waitForSelector('#btnExport');
     await page.click('#btnExport');
     console.log('export btn clicked');
-
-    const response = await page.waitForNavigation({waitUntil:'networkidle2'});
-    console.log("load finished")
-    browser.close(); 
-
+    // TODO: return file name/path; 
+    //browser.close()
+    return browser;  
+    
+    // TODO: return file name/path; 
 };
 
 

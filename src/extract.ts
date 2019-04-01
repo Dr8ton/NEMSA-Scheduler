@@ -2,23 +2,44 @@ var fb = require("./firebase.js");
 var xlsx = require('node-xlsx').default;
 
 
-const workSheetsFromFile = xlsx.parse(`Daily.xlsx`);
+const workSheetsFromFile = xlsx.parse(`../../../../Downloads/Daily Schedule (RAW) (1).xlsx`);
 
 
 let dataFromReport = workSheetsFromFile[0].data
-let shifts = [];
 
-//dataFromReport.forEach((e) => {
-//    if(isSprintTruck(e[10])){
-//        continue;
-//    }
-//    
-//    if(crewOne || crewTwo are preceptors){
-//        Append to shifts
-//    }
-//    
-//    
-//    });
+// var columns = {};
+// for (var i = 0; i < oFullResponse.results.length; i++) {
+//     var key = oFullResponse.results[i].label;
+//     columns[key] = {
+//         sortable: true,
+//         resizeable: true
+//     };
+// }
+
+export function extractShifts() {
+
+    let shifts = {};
+
+    dataFromReport.forEach((e) => {
+        if (isSprintTruck(e[10])) {
+            //continue;
+        } else {
+
+            let key = e[0];
+            shifts[key] = {
+                crewOne: e[16] === undefined ? e[15] : e[16],
+                crewTwo: e[21] === undefined ? e[20] : e[21],
+                location: e[2],
+                startDTG: e[4],
+                endDTG: e[5],
+                truck: e[10]
+
+            }
+        }
+    });
+
+    return shifts;
+}
 
 
 // TODO: work the spreadsheet
@@ -93,4 +114,6 @@ function isSprintTruck(truckNumber: string){
     return sprintTrucks.includes(truckNumber);
 }
 
-console.log();
+
+let currentShifts = extractShifts(); 
+console.log(currentShifts); 
