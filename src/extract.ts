@@ -7,15 +7,6 @@ const workSheetsFromFile = xlsx.parse(`../../../../Downloads/Daily Schedule (RAW
 
 let dataFromReport = workSheetsFromFile[0].data
 
-// var columns = {};
-// for (var i = 0; i < oFullResponse.results.length; i++) {
-//     var key = oFullResponse.results[i].label;
-//     columns[key] = {
-//         sortable: true,
-//         resizeable: true
-//     };
-// }
-
 export function extractShifts() {
 
     let shifts = {};
@@ -85,7 +76,7 @@ export function extractShifts() {
  * 
  * @returns {boolean} true if the employee is an active PARAMEDIC preceptor. FALSE if the employee is not BOTH a PARAMEDIC preceptor and active. 
  */
-function isActiveParamedicPreceptor(empNumber: string) {
+function isActiveParamedicPreceptor(empNumber: string): boolean {
     // TODO: expand logic in isActiveParamedicPreceptor();
     return true;
 }
@@ -130,7 +121,3 @@ function isSprintTruck(truckNumber: string): boolean {
 function alreadyHasStudent(notes: string): boolean {
     return notes.includes("STUDENT/RIDER:")
 }
-
-
-let currentShifts = extractShifts();
-console.log(currentShifts); 
