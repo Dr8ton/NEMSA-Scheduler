@@ -22,20 +22,31 @@ export function extractShifts() {
 
     dataFromReport.forEach((e) => {
         if (isSprintTruck(e[10])) {
-            //continue;
-        } else {
-
-            let key = e[0];
-            shifts[key] = {
-                crewOne: e[16] === undefined ? e[15] : e[16],
-                crewTwo: e[21] === undefined ? e[20] : e[21],
-                location: e[2],
-                startDTG: e[4],
-                endDTG: e[5],
-                truck: e[10]
-
-            }
+            return;
         }
+
+        if (alreadyHasStudent(e[6])) {
+            return;
+        }
+
+        let one: string = e[16] === undefined ? e[15] : e[16];
+        let two: string = e[21] === undefined ? e[20] : e[21];
+
+        if (!isActiveEMTPreceptor(one) && !isActiveParamedicPreceptor(one) && !isActiveParamedicPreceptor(two) && !isActiveEMTPreceptor(two)) {
+            return;
+        }
+
+        let key: string = e[0];
+        shifts[key] = {
+            crewOne: one,
+            crewTwo: two,
+            location: e[2],
+            startDTG: e[4],
+            endDTG: e[5],
+            truck: e[10]
+        }
+
+        // TODO: Maybe skip creating shift object and just create calendar event?
     });
 
     return shifts;
@@ -74,8 +85,9 @@ export function extractShifts() {
  * 
  * @returns {boolean} true if the employee is an active PARAMEDIC preceptor. FALSE if the employee is not BOTH a PARAMEDIC preceptor and active. 
  */
-function isActiveParamedicPreceptor(){
-    
+function isActiveParamedicPreceptor(empNumber: string) {
+    // TODO: expand logic in isActiveParamedicPreceptor();
+    return true;
 }
 
 /**
@@ -87,8 +99,9 @@ function isActiveParamedicPreceptor(){
  * 
  * @returns {boolean} true if the employee is an active EMT preceptor. FALSE if the employee is not BOTH an EMT preceptor and active. 
 */
-function isActiveEMTPreceptor(){
-    
+function isActiveEMTPreceptor(empNumber: string): boolean {
+    // TODO: expand logic in isActiveEMTPrectpror(); 
+    return true;
 }
 
 /**
@@ -100,20 +113,24 @@ function isActiveEMTPreceptor(){
  * 
  * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
  */
-function isSprintTruck(truckNumber: string){
-    
+function isSprintTruck(truckNumber: string): boolean {
+
     //TODO: add this to DB so that this can scale to other areas
-    
+
     let sprintTrucks = [
         "221",
         "219",
         "226",
         "227"
-        ]
-    
+    ]
+
     return sprintTrucks.includes(truckNumber);
 }
 
+function alreadyHasStudent(notes: string): boolean {
+    return notes.includes("STUDENT/RIDER:")
+}
 
-let currentShifts = extractShifts(); 
+
+let currentShifts = extractShifts();
 console.log(currentShifts); 

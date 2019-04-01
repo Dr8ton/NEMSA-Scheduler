@@ -3,8 +3,8 @@ import  * as downloadShifts from "./downloadShifts";
 require('dotenv').config();
 
 async function  main(){
-    let browswer = await downloadShifts.getShiftExcelFile(); 
-    browswer.close(); 
+    let browser = await downloadShifts.getShiftExcelFile(); 
+    browser.close(); 
 }
 
 

@@ -1,6 +1,6 @@
 'use strict';
 require('dotenv').config();
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
@@ -10,8 +10,7 @@ export async function getShiftExcelFile(){
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);
 
-    var credentials = process.env.CREWSCHEDULER_CREDENTIALS; 
-    console.log(credentials);
+    console.log(`Attempting to insert credentials : ${process.env.CREWSCHEDULER_COMPANY}`)
     await page.type('#tbCompany', process.env.CREWSCHEDULER_COMPANY);
     await page.type('#tbUserName', process.env.CREWSCHEDULER_LOGIN);
     await page.type('#tbPassword', process.env.CREWSCHEDULER_PASSWORD);
