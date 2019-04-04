@@ -4,6 +4,7 @@ import fs from 'fs';
 import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import _ from 'underscore';
+//import {extractShifts} from './extract'; 
 
 require('dotenv').config();
 const downloadFolderPath = downloadsFolder();
@@ -20,13 +21,18 @@ async function main() {
     }
 
     let latestFile = getMostRecentFileName(downloadFolderPath);
+    console.log(latestFile); 
 
     while (path.extname(latestFile) != ".xlsx") {
         let latestFile = getMostRecentFileName(downloadFolderPath);
         await delay(1000);
-        console.log(`Latest File: ${latestFile}`);
     }
+
     browser.close();
+
+
+
+
 }
 
 // Return only base file name without dir

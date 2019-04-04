@@ -1,17 +1,23 @@
-var fb = require("./firebase.js");
 var xlsx = require('node-xlsx').default;
+import downloadsFolder from 'downloads-folder';
+import path from 'path';
 
-
-const workSheetsFromFile = xlsx.parse(`../../../../Downloads/Daily Schedule (RAW) (1).xlsx`);
-
-
-let dataFromReport = workSheetsFromFile[0].data
 
 export function extractShifts() {
+
+    let dl = path.join(downloadsFolder(), 'Daily Schedule (RAW) (21).xlsx');
+    const workSheetsFromFile = xlsx.parse(dl);
+    let dataFromReport = workSheetsFromFile[0].data
+    console.log(dataFromReport);
+
+    // let dl = path.join(downloadsFolder(), fileName);
+    // const workSheetsFromFile = xlsx.parse(dl);
+    // let dataFromReport = workSheetsFromFile[0].data
 
     let shifts = {};
 
     dataFromReport.forEach((e) => {
+
         if (isSprintTruck(e[10])) {
             return;
         }
@@ -20,10 +26,15 @@ export function extractShifts() {
             return;
         }
 
+        if (e[1] === 'OS') {
+            return;
+        }
+
         let one: string = e[16] === undefined ? e[15] : e[16];
         let two: string = e[21] === undefined ? e[20] : e[21];
 
-        if (!isActiveEMTPreceptor(one) && !isActiveParamedicPreceptor(one) && !isActiveParamedicPreceptor(two) && !isActiveEMTPreceptor(two)) {
+        if (!isActivePreceptor(one, preceptors) && !isActivePreceptor(two, preceptors)) {
+            console.log(`Shift ${e[0]}: No preceptor found. `)
             return;
         }
 
@@ -36,16 +47,9 @@ export function extractShifts() {
             endDTG: e[5],
             truck: e[10]
         }
-
-        // TODO: Maybe skip creating shift object and just create calendar event?
     });
-
     return shifts;
 }
-
-
-// TODO: work the spreadsheet
-
 
 //'SchedShiftID',0, unique ID of shift
 //  'ShiftName',1, truck full name
@@ -66,6 +70,9 @@ export function extractShifts() {
 
 
 
+function isActivePreceptor(crewId: string, activePreceptors: string[]): boolean {
+    return activePreceptors.includes(crewId);
+}
 
 /**
  * Summary. Checks for acitve PARAMEDIC preceptor. 
@@ -76,24 +83,6 @@ export function extractShifts() {
  * 
  * @returns {boolean} true if the employee is an active PARAMEDIC preceptor. FALSE if the employee is not BOTH a PARAMEDIC preceptor and active. 
  */
-function isActiveParamedicPreceptor(empNumber: string): boolean {
-    // TODO: expand logic in isActiveParamedicPreceptor();
-    return true;
-}
-
-/**
- * Summary. Checks for acitve EMT preceptor. 
- * 
- * Description. Not all employees are EMT preceptors and not all EMT preceptors are available to have students. This checks against the list of EMT preceptors to see if they are both an EMT preceptor and active. 
- * 
- * @param {string} employeeNumber: employee's number from the schedule. 
- * 
- * @returns {boolean} true if the employee is an active EMT preceptor. FALSE if the employee is not BOTH an EMT preceptor and active. 
-*/
-function isActiveEMTPreceptor(empNumber: string): boolean {
-    // TODO: expand logic in isActiveEMTPrectpror(); 
-    return true;
-}
 
 /**
  * Summary. Checks to see if the truck on shift is a sprint truck. 
@@ -104,6 +93,7 @@ function isActiveEMTPreceptor(empNumber: string): boolean {
  * 
  * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
  */
+
 function isSprintTruck(truckNumber: string): boolean {
 
     //TODO: add this to DB so that this can scale to other areas
@@ -119,5 +109,12 @@ function isSprintTruck(truckNumber: string): boolean {
 }
 
 function alreadyHasStudent(notes: string): boolean {
-    return notes.includes("STUDENT/RIDER:")
+    if (notes === undefined) {
+        return false;
+    } else {
+        return notes.includes("STUDENT/RIDER:")
+    }
 }
+
+
+extractShifts(); 
