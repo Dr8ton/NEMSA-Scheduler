@@ -44,9 +44,9 @@ export async function getAllActiveEMTPreceptors() {
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors: string[] = [];
   for (let emt of activeEmts.docs) {
-    preceptors.push(emt.id); 
+    preceptors.push(emt.id);
   }
-  return preceptors; 
+  return preceptors;
 }
 
 export async function getAllActiveParamedicPreceptors() {
@@ -54,7 +54,15 @@ export async function getAllActiveParamedicPreceptors() {
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors: string[] = [];
   for (let emt of activeEmts.docs) {
-    preceptors.push(emt.id); 
+    preceptors.push(emt.id);
   }
-  return preceptors;  
+  return preceptors;
 }
+
+export async function getAllActivePreceptors() {
+  let p = await getAllActiveParamedicPreceptors();
+  let e = await getAllActiveEMTPreceptors();
+  let preceptors: string[] = p.concat(e);
+  return preceptors;
+}
+

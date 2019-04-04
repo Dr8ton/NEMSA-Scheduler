@@ -4,12 +4,77 @@ import path from 'path';
 
 
 export function extractShifts() {
-
+    let preceptors = ['012073',
+        '012862',
+        '012897',
+        '014412',
+        '014853',
+        '014898',
+        '015114',
+        '015124',
+        '015130',
+        '015138',
+        '015942',
+        '015963',
+        '016311',
+        '016894',
+        '017059',
+        '017179',
+        '017189',
+        '017224',
+        '017462',
+        '017567',
+        '017652',
+        '017781',
+        '017816',
+        '018124',
+        '018313',
+        '018823',
+        '018919',
+        '019471',
+        '019852',
+        '020307',
+        '020755',
+        '020780',
+        '020867',
+        '021879',
+        '022194',
+        '022330',
+        '022593',
+        '022725',
+        '022746',
+        '023205',
+        '023407',
+        '023491',
+        '023717',
+        '023733',
+        '023828',
+        '023943',
+        '024057',
+        '024168',
+        '024521',
+        '026049',
+        '026226',
+        '026417',
+        '026721',
+        '027207',
+        '000000',
+        '017652',
+        '018823',
+        '022725',
+        '023205',
+        '023407',
+        '023943',
+        '024521',
+        '026049',
+        '026226',
+        '026417',
+        '026721',
+        '027207'];
     let dl = path.join(downloadsFolder(), 'Daily Schedule (RAW) (21).xlsx');
-    const workSheetsFromFile = xlsx.parse(dl);
+    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
     let dataFromReport = workSheetsFromFile[0].data
-    console.log(dataFromReport);
-
+    // console.log(dataFromReport); 
     // let dl = path.join(downloadsFolder(), fileName);
     // const workSheetsFromFile = xlsx.parse(dl);
     // let dataFromReport = workSheetsFromFile[0].data
@@ -33,21 +98,27 @@ export function extractShifts() {
         let one: string = e[16] === undefined ? e[15] : e[16];
         let two: string = e[21] === undefined ? e[20] : e[21];
 
+        // console.log(`${e[0]}`);
+
+        // console.log(`one ${isActivePreceptor(one,preceptors)}`);
+        // console.log(`two ${isActivePreceptor(two,preceptors)}`);
+
         if (!isActivePreceptor(one, preceptors) && !isActivePreceptor(two, preceptors)) {
-            console.log(`Shift ${e[0]}: No preceptor found. `)
+            // console.log(`Shift ${e[0]}: No preceptor found. `)
             return;
         }
 
         let key: string = e[0];
         shifts[key] = {
-            crewOne: one,
-            crewTwo: two,
+            crewOne: formatEmployeeId(one),
+            crewTwo: formatEmployeeId(two),
             location: e[2],
-            startDTG: e[4],
-            endDTG: e[5],
+            startDTG: e[4], // UTC time zone
+            endDTG: e[5], // UTC time zone
             truck: e[10]
         }
     });
+    console.log(shifts);
     return shifts;
 }
 
@@ -71,18 +142,8 @@ export function extractShifts() {
 
 
 function isActivePreceptor(crewId: string, activePreceptors: string[]): boolean {
-    return activePreceptors.includes(crewId);
+    return activePreceptors.includes(formatEmployeeId(crewId));
 }
-
-/**
- * Summary. Checks for acitve PARAMEDIC preceptor. 
- * 
- * Description. Not all employees are preceptors and not all preceptors are available to have students. This checks against the list of PARAMEDIC preceptors to see if they are both a PARAMEDIC preceptor and active. 
- * 
- * @param {string} employeeNumber: employee's number from the schedule. 
- * 
- * @returns {boolean} true if the employee is an active PARAMEDIC preceptor. FALSE if the employee is not BOTH a PARAMEDIC preceptor and active. 
- */
 
 /**
  * Summary. Checks to see if the truck on shift is a sprint truck. 
@@ -116,5 +177,21 @@ function alreadyHasStudent(notes: string): boolean {
     }
 }
 
+function formatEmployeeId(id: string): string {
+    if (id === undefined) {
+        return "";
+    }
+    return id.slice(0, 6);
+}
 
+// 014328 Schwindling, G.
+// 017224 Munlin, N.
+// 024939 Santora, D.
+// 024057 Bubrig, N.
+// 017175 Johnson, C.
+// 021883 Penton, K.
+// 025779 Corrales, A.
+// 021668 Woods, C.
+// 018919 Garrison, M.
+// 019471 McClendon, J.
 extractShifts(); 
