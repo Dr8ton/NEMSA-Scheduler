@@ -22,6 +22,7 @@
     "firebase": "^5.8.5",
     "googleapis": "^39.1.0",
     "gtoken": "^2.3.3",
+    "moment": "^2.24.0",
     "node-xlsx": "^0.14.1",
     "puppeteer": "^1.12.2",
     "underscore": "^1.9.1"

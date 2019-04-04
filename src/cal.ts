@@ -16,7 +16,7 @@ const ERROR_RESPONSE = {
     status: "500",
     message: "There was an error adding an event to your Google calendar"
 };
-const TIME_ZONE = 'EST';
+
 
 function addEvent(event, auth) {
     return new Promise(function(resolve, reject) {
@@ -28,11 +28,11 @@ function addEvent(event, auth) {
                 'description': event.description,
                 'start': {
                     'dateTime': event.startTime,
-                    'timeZone': TIME_ZONE,
+
                 },
                 'end': {
                     'dateTime': event.endTime,
-                    'timeZone': TIME_ZONE,
+
                 },
             },
         }, (err, res) => {
@@ -46,13 +46,13 @@ function addEvent(event, auth) {
     });
 }
 
-function addEventToCalendar(){
-    let eventData = {
-        "eventName": "Firebase Event",
-        "description": "This is a sample description",
-        "startTime": "2019-04-01T10:00:00",
-        "endTime": "2019-04-01T15:00:00"
-      }
+export function addEventToCalendar(event:object){
+    // let eventData = {
+    //     "eventName": "Test Event",
+    //     "description": "This is a sample description",
+    //     "startTime": "2019-04-14T21:59:59.999Z",
+    //     "endTime": "2019-04-15T09:59:59.999Z"
+    //   }
 
     // const eventData = {
     //     eventName: request.body.eventName,
@@ -70,7 +70,6 @@ function addEventToCalendar(){
         refresh_token: googleCredentials.refresh_token
     });
 
-    addEvent(eventData, oAuth2Client);
+    addEvent(event, oAuth2Client);
 };
 
-addEventToCalendar();

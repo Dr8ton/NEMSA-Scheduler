@@ -1,9 +1,11 @@
 var xlsx = require('node-xlsx').default;
 import downloadsFolder from 'downloads-folder';
 import path from 'path';
+import moment from 'moment';
 
 
-export function extractShifts() {
+export function extractShifts(fileName:string) {
+    //TODO: pass in preceptors
     let preceptors = ['012073',
         '012862',
         '012897',
@@ -71,18 +73,15 @@ export function extractShifts() {
         '026417',
         '026721',
         '027207'];
-    let dl = path.join(downloadsFolder(), 'Daily Schedule (RAW) (21).xlsx');
+   // TODO: pass in file name; 
+        let dl = path.join(downloadsFolder(), fileName);
     const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
     let dataFromReport = workSheetsFromFile[0].data
-    // console.log(dataFromReport); 
-    // let dl = path.join(downloadsFolder(), fileName);
-    // const workSheetsFromFile = xlsx.parse(dl);
-    // let dataFromReport = workSheetsFromFile[0].data
 
     let shifts = {};
 
     dataFromReport.forEach((e) => {
-
+//TODO: sprint trucks from DB
         if (isSprintTruck(e[10])) {
             return;
         }
@@ -98,27 +97,23 @@ export function extractShifts() {
         let one: string = e[16] === undefined ? e[15] : e[16];
         let two: string = e[21] === undefined ? e[20] : e[21];
 
-        // console.log(`${e[0]}`);
-
-        // console.log(`one ${isActivePreceptor(one,preceptors)}`);
-        // console.log(`two ${isActivePreceptor(two,preceptors)}`);
-
         if (!isActivePreceptor(one, preceptors) && !isActivePreceptor(two, preceptors)) {
-            // console.log(`Shift ${e[0]}: No preceptor found. `)
             return;
         }
 
         let key: string = e[0];
+
         shifts[key] = {
             crewOne: formatEmployeeId(one),
             crewTwo: formatEmployeeId(two),
             location: e[2],
-            startDTG: e[4], // UTC time zone
-            endDTG: e[5], // UTC time zone
+            startDTG: `${moment.utc(e[4])}`, // UTC time zone
+            endDTG: `${moment.utc(e[5])}`, // UTC time zone
             truck: e[10]
         }
+        https://github.com/moment/moment/issues/3256
     });
-    console.log(shifts);
+    console.log(shifts); 
     return shifts;
 }
 
@@ -183,15 +178,3 @@ function formatEmployeeId(id: string): string {
     }
     return id.slice(0, 6);
 }
-
-// 014328 Schwindling, G.
-// 017224 Munlin, N.
-// 024939 Santora, D.
-// 024057 Bubrig, N.
-// 017175 Johnson, C.
-// 021883 Penton, K.
-// 025779 Corrales, A.
-// 021668 Woods, C.
-// 018919 Garrison, M.
-// 019471 McClendon, J.
-extractShifts(); 
