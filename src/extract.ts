@@ -4,7 +4,7 @@ import path from 'path';
 import moment from 'moment';
 
 
-export function extractShifts(fileName:string) {
+export function extractShifts(fileName: string) {
     //TODO: pass in preceptors
     let preceptors = ['012073',
         '012862',
@@ -73,15 +73,24 @@ export function extractShifts(fileName:string) {
         '026417',
         '026721',
         '027207'];
-   // TODO: pass in file name; 
-        let dl = path.join(downloadsFolder(), fileName);
-    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    let dataFromReport = workSheetsFromFile[0].data
+    // TODO: pass in file name; 
+    let dl = path.join(downloadsFolder(), fileName);
+
+
+    //testing
+    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    let dataFromReport = testReport[0].data
+
+
+    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    // let dataFromReport = workSheetsFromFile[0].data
+
 
     let shifts = {};
 
     dataFromReport.forEach((e) => {
-//TODO: sprint trucks from DB
+
+        //TODO: sprint trucks from DB
         if (isSprintTruck(e[10])) {
             return;
         }
@@ -107,13 +116,13 @@ export function extractShifts(fileName:string) {
             crewOne: formatEmployeeId(one),
             crewTwo: formatEmployeeId(two),
             location: e[2],
-            startDTG: `${moment.utc(e[4])}`, // UTC time zone
-            endDTG: `${moment.utc(e[5])}`, // UTC time zone
+            startDTG: `${formatDTG(e[4])}`, // UTC time zone
+            endDTG: `${formatDTG(e[5])}`, // UTC time zone
             truck: e[10]
         }
-        https://github.com/moment/moment/issues/3256
+        //https://github.com/moment/moment/issues/3256
     });
-    console.log(shifts); 
+    console.log(shifts)
     return shifts;
 }
 
@@ -178,3 +187,11 @@ function formatEmployeeId(id: string): string {
     }
     return id.slice(0, 6);
 }
+
+function formatDTG(d: string) {
+    var m = moment(d);
+    var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
+    return roundUp
+}
+
+extractShifts("doesn't matter"); 
