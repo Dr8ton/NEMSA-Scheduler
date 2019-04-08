@@ -1,6 +1,7 @@
 'use strict';
 require('dotenv').config();
 import puppeteer from 'puppeteer';
+import { delay } from './app';
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
@@ -29,8 +30,11 @@ export async function getShiftExcelFile(){
     let nextYear = new Date(today.getFullYear()+1, today.getMonth(), today.getDay());
 
     await page.waitForSelector('#dpStart_dateInput');
+    delay(3000);
     await page.type('#dpStart_dateInput', today.toLocaleDateString());
+    delay(3000);
     await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
+    delay(3000);
 
     await page.waitForSelector('#btnExport');
     await page.click('#btnExport');

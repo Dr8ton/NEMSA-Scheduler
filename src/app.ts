@@ -4,7 +4,8 @@ import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import _ from 'underscore';
 import { extractShifts } from "./extract";
-import { addEventToCalendar } from "./cal";
+import { addEventToCalendar, clearCalendar, countEventsOnCalendar } from "./cal";
+import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 
 //import {extractShifts} from './extract'; 
 
@@ -12,68 +13,40 @@ require('dotenv').config();
 const downloadFolderPath = downloadsFolder();
 
 async function main() {
- 
-      let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
-       let browser = await downloadShifts.getShiftExcelFile();
-       let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
-   
-       while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
-           console.log(`waiting for download to finish`);
-           numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
-           await delay(1000);
-       }
-   
-       let latestFile = getMostRecentFileName(downloadFolderPath);
-       console.log(latestFile);
-   
-       while (path.extname(latestFile) != ".xlsx") {
-           let latestFile = getMostRecentFileName(downloadFolderPath);
-           await delay(1000);
-       }
-   
-       browser.close();
-   
-       
-       let SHIFTS = extractShifts(latestFile); 
 
-    // const SHIFTS = {
-    //     '5043461':
-    //     {
-    //         crewOne: '019471',
-    //         crewTwo: '027634',
-    //         location: 'CAD',
-    //         startDTG: '2019-04-08T12:00:00.000Z',
-    //         endDTG: '2019-04-09T00:00:00.000Z',
-    //         truck: '310'
-    //     },
-    //     '5043462':
-    //     {
-    //         crewOne: '019471',
-    //         crewTwo: '027634',
-    //         location: 'CAD',
-    //         startDTG: '2019-04-09T12:00:00.000Z',
-    //         endDTG: '2019-04-10T00:00:00.000Z',
-    //         truck: '310'
-    //     },
-    //     '5043463':
-    //     {
-    //         crewOne: '019471',
-    //         crewTwo: '027634',
-    //         location: 'CAD',
-    //         startDTG: '2019-04-12T12:00:00.000Z',
-    //         endDTG: '2019-04-13T00:00:00.000Z',
-    //         truck: '310'
-    //     },
-    //     '5043466':
-    //     {
-    //         crewOne: '019471',
-    //         crewTwo: '027634',
-    //         location: 'CAD',
-    //         startDTG: "2019-04-17T12:00:00.000Z",
-    //         endDTG: "2019-04-18T00:00:00.000Z",
-    //         truck: '310'
-    //     }
-    // }
+    //erease previous data from calendar. 
+    await clearCalendar();
+
+    //get lists of preceptors
+    const emtPreceptors = await getAllActiveEMTPreceptors();
+    const paramedicPreceptors = await getAllActiveParamedicPreceptors();
+    const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
+
+    //download shift report
+    let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
+    let browser = await downloadShifts.getShiftExcelFile();
+    let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+
+    while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
+        console.log(`waiting for download to finish`);
+        numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+        await delay(1000);
+    }
+
+    let latestFile = getMostRecentFileName(downloadFolderPath);
+
+    while (path.extname(latestFile) != ".xlsx") {
+        let latestFile = getMostRecentFileName(downloadFolderPath);
+        await delay(1000);
+    }
+
+    browser.close();
+
+
+    let SHIFTS = extractShifts(latestFile);
+    var numberOfShiftsExtracted = Object.keys(SHIFTS).length;
+    console.log(`${numberOfShiftsExtracted} shifts extracted`);
+
 
     for (let shift in SHIFTS) {
 
@@ -83,9 +56,23 @@ async function main() {
             "startTime": `${SHIFTS[shift].startDTG}`,
             "endTime": `${SHIFTS[shift].endDTG}`
         }
-        console.log(eventData); 
-      //  addEventToCalendar(eventData);
+
+        try {
+            addEventToCalendar(eventData);
+        } catch (error) {
+            console.log("unable to add event to calendar: ", error);
+        }
+
+        await delay(500);
     }
+
+    try {
+        let onCalendar: number = await countEventsOnCalendar();
+        console.log(`${onCalendar} events created on calendar`)
+    } catch (error) {
+        console.log("unable to count number of events on calendar", error)
+    }
+
 }
 
 /**
@@ -125,17 +112,13 @@ function getMostRecentFileName(dir) {
     });
 }
 
-function delay(ms: number) {
+export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-async function test() {
-    let latestFile = getMostRecentFileName(downloadFolderPath);
 
-    while (path.extname(latestFile) === ".xlsx") {
-        let latestFile = getMostRecentFileName(downloadFolderPath);
-        console.log(`Latest File: ${latestFile}`);
-        await delay(1000);
-    }
+function mergeAllActivePreceptors(e: string[], p: string[]): string[] {
+    let allPreceptors: string[] = p.concat(e);
+    return allPreceptors;
 }
 
 //test();

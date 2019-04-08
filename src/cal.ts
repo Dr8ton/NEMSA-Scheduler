@@ -1,26 +1,15 @@
-/*
- * A Firebase Cloud Function that uses Google OAuth2 to 
- * manage a Google user's calendar.
- * 
- * @Author: Scott McCartney
- * @Twitter: @skittlesMc9
- * @Github: https://github.com/scott-mccartney/google-calendar-cloud-function
- */
-const {google} = require('googleapis');
-const OAuth2 = google.auth.OAuth2; 
+
+const { google } = require('googleapis');
+const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
+import { delay } from "./app";
 
 const googleCredentials = require('../secrets/key.json');
 
-const ERROR_RESPONSE = {
-    status: "500",
-    message: "There was an error adding an event to your Google calendar"
-};
-
-
-function addEvent(event, auth) {
-    return new Promise(function(resolve, reject) {
-        calendar.events.insert({
+export async function addEventToCalendar(event) {
+    let auth = authenticate();
+    try {
+        await calendar.events.insert({
             auth: auth,
             calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
             resource: {
@@ -35,31 +24,67 @@ function addEvent(event, auth) {
 
                 },
             },
-        }, (err, res) => {
-            if (err) {
-                console.log('Rejecting because of error');
-                reject(err);
-            }
-            console.log('Request successful');
-            resolve(res.data);
+        })
+
+    } catch (error) {
+        console.log('unable to add event to calendar: ', error);
+    }
+}
+
+
+export async function clearCalendar() {
+
+    let auth = authenticate();
+    try {
+        let e = await calendar.events.list({
+            auth: auth,
+            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com'
+        })
+        e.data.items.forEach(async element => {
+            await deleteEvent(auth, element.id);
+            delay(500);
         });
+    } catch (error) {
+        console.log(`unable to clear calendar: ${error}`);
+    }
+
+}
+
+
+async function deleteEvent(auth, eventId: string) {
+
+    var params = {
+        auth: auth,
+        calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+        eventId: eventId,
+    };
+
+    await calendar.events.delete(params, function (err) {
+        if (err) {
+            console.log('The API returned an error: ' + err);
+            return;
+        }
+        console.log('Event deleted.');
     });
 }
 
-export function addEventToCalendar(event:object){
-    // let eventData = {
-    //     "eventName": "Test Event",
-    //     "description": "This is a sample description",
-    //     "startTime": "2019-04-14T21:59:59.999Z",
-    //     "endTime": "2019-04-15T09:59:59.999Z"
-    //   }
+export async function countEventsOnCalendar(): Promise<number> {
 
-    // const eventData = {
-    //     eventName: request.body.eventName,
-    //     description: request.body.description,
-    //     startTime: request.body.startTime,
-    //     endTime: request.body.endTime
-    // };
+    let auth = authenticate();
+    try {
+        let e = await calendar.events.list({
+            auth: auth,
+            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com'
+        })
+        return e.data.items.length;
+    } catch (error) {
+        console.log(`unable to count number of events created on calendar: ${error}`);
+    }
+
+
+}
+
+function authenticate() {
     const oAuth2Client = new OAuth2(
         googleCredentials.web.client_id,
         googleCredentials.web.client_secret,
@@ -69,7 +94,5 @@ export function addEventToCalendar(event:object){
     oAuth2Client.setCredentials({
         refresh_token: googleCredentials.refresh_token
     });
-
-    addEvent(event, oAuth2Client);
-};
-
+    return oAuth2Client;
+}

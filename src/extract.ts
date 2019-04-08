@@ -5,7 +5,7 @@ import moment from 'moment';
 
 
 export function extractShifts(fileName: string) {
-    //TODO: pass in preceptors
+    //TODO: pass in preceptors from DB
     let preceptors = ['012073',
         '012862',
         '012897',
@@ -73,7 +73,7 @@ export function extractShifts(fileName: string) {
         '026417',
         '026721',
         '027207'];
-    // TODO: pass in file name; 
+
     let dl = path.join(downloadsFolder(), fileName);
 
 
@@ -81,7 +81,7 @@ export function extractShifts(fileName: string) {
     const testReport = xlsx.parse("report.xlsx", { cellDates: true });
     let dataFromReport = testReport[0].data
 
-
+    //working setup
     // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
     // let dataFromReport = workSheetsFromFile[0].data
 
@@ -116,13 +116,12 @@ export function extractShifts(fileName: string) {
             crewOne: formatEmployeeId(one),
             crewTwo: formatEmployeeId(two),
             location: e[2],
-            startDTG: `${formatDTG(e[4])}`, // UTC time zone
-            endDTG: `${formatDTG(e[5])}`, // UTC time zone
+            startDTG: `${formatDTG(e[4])}`,
+            endDTG: `${formatDTG(e[5])}`, 
             truck: e[10]
         }
         //https://github.com/moment/moment/issues/3256
     });
-    console.log(shifts)
     return shifts;
 }
 
@@ -191,7 +190,7 @@ function formatEmployeeId(id: string): string {
 function formatDTG(d: string) {
     var m = moment(d);
     var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
-    return roundUp
+    return roundUp.toISOString(); 
 }
 
-extractShifts("doesn't matter"); 
+extractShifts("doesn't matter");

@@ -11,11 +11,10 @@ var config = {
   storageBucket: "nemsa-6c408.appspot.com",
   messagingSenderId: "512173906413"
 }
+
 firebase.initializeApp(config);
 
 var db = firebase.firestore();
-
-
 
 /**
  * adds a PARAMEDIC preceptor to the list of available preceptors
