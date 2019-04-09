@@ -75,25 +75,6 @@ async function main() {
 
 }
 
-/**
- * shift 
- *   '5046930':
-   { crewOne: '014898',
-     crewTwo: '027434',
-     location: 'SLC',
-     startDTG: 2019-04-14T21:59:59.999Z,
-     endDTG: 2019-04-15T09:59:59.999Z,
-     truck: 'X701' },
- 
-     event
-         // let eventData = {
-    //     "eventName": "Test Event",
-    //     "description": "This is a sample description",
-    //     "startTime": "2019-04-14T21:59:59.999Z",
-    //     "endTime": "2019-04-15T09:59:59.999Z"
-    //   }
- 
- */
 
 
 

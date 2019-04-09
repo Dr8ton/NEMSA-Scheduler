@@ -2,17 +2,18 @@
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
-import { delay } from "./app";
 
 const googleCredentials = require('../secrets/key.json');
 
 export async function addEventToCalendar(event) {
     let auth = authenticate();
     try {
+        console.log(`Adding event: ${event.eventName} @ ${event.startTime}`)
         await calendar.events.insert({
             auth: auth,
             calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
             resource: {
+                // TODO : Change name to Truck @ LOC w/ Preceptor Name
                 'summary': event.eventName,
                 'description': event.description,
                 'start': {
@@ -38,12 +39,31 @@ export async function clearCalendar() {
     try {
         let e = await calendar.events.list({
             auth: auth,
-            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com'
+            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+            maxResults: 9999
         })
-        e.data.items.forEach(async element => {
-            await deleteEvent(auth, element.id);
-            delay(500);
-        });
+        console.log(e);
+        console.log("list of events: " + e.data.items.length);
+
+        for await (const i of e.data.items) {
+            try {
+                console.log(`trying to delete: ${i.summary} on ${i.start.dateTime}`);
+
+
+                var params = {
+                    auth: auth,
+                    calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+                    eventId: i.id,
+                };
+                await calendar.events.delete(params);
+
+            } catch (error) {
+                console.log(`unable to delete: ${i.id}: ${error}`);
+
+            }
+
+        }
+
     } catch (error) {
         console.log(`unable to clear calendar: ${error}`);
     }
@@ -51,31 +71,16 @@ export async function clearCalendar() {
 }
 
 
-async function deleteEvent(auth, eventId: string) {
-
-    var params = {
-        auth: auth,
-        calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
-        eventId: eventId,
-    };
-
-    await calendar.events.delete(params, function (err) {
-        if (err) {
-            console.log('The API returned an error: ' + err);
-            return;
-        }
-        console.log('Event deleted.');
-    });
-}
-
 export async function countEventsOnCalendar(): Promise<number> {
 
     let auth = authenticate();
     try {
         let e = await calendar.events.list({
             auth: auth,
-            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com'
+            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+            maxResults: 9999
         })
+        console.log(e.data.items.length)
         return e.data.items.length;
     } catch (error) {
         console.log(`unable to count number of events created on calendar: ${error}`);
@@ -96,3 +101,4 @@ function authenticate() {
     });
     return oAuth2Client;
 }
+

@@ -78,12 +78,12 @@ export function extractShifts(fileName: string) {
 
 
     //testing
-    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    let dataFromReport = testReport[0].data
+    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    // let dataFromReport = testReport[0].data
 
     //working setup
-    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    // let dataFromReport = workSheetsFromFile[0].data
+    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {};
@@ -192,5 +192,3 @@ function formatDTG(d: string) {
     var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
     return roundUp.toISOString(); 
 }
-
-extractShifts("doesn't matter");

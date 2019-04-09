@@ -7,3 +7,5 @@ export const AREA = {
     }
 
 }
+
+// TODO: Convert to array of objects for each area;  
