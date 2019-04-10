@@ -6,75 +6,76 @@ import _ from 'underscore';
 import { extractShifts } from "./extract";
 import { addEventToCalendar, clearCalendar, countEventsOnCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
+import { AREAS } from "./AREAS";
 
 require('dotenv').config();
 const downloadFolderPath = downloadsFolder();
 
 async function main() {
+    for (const area of AREAS) {
 
-    //erease previous data from calendar. 
-    await clearCalendar();
+        //erease previous data from calendar. 
+        await clearCalendar(area.calendarIds.emt);
+        await clearCalendar(area.calendarIds.paramedic);
 
-    //get lists of preceptors
-    const emtPreceptors = await getAllActiveEMTPreceptors();
-    const paramedicPreceptors = await getAllActiveParamedicPreceptors();
- 
-    const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
+        //get lists of preceptors
+        const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
+        const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
 
-    //download shift report
-    let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
-    let browser = await downloadShifts.getShiftExcelFile();
-    let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+        //download shift report
+        let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
+        let browser = await downloadShifts.getShiftExcelFile(area.crewscheduler.region);
+        let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
 
-    while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
-        console.log(`waiting for download to finish`);
-        numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
-        await delay(1000);
-    }
+        while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
+            console.log(`waiting for download to finish`);
+            numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+            await delay(1000);
+        }
 
-    let latestFile = getMostRecentFileName(downloadFolderPath);
-
-    while (path.extname(latestFile) != ".xlsx") {
         let latestFile = getMostRecentFileName(downloadFolderPath);
-        await delay(1000);
-    }
 
-    browser.close();
+        while (path.extname(latestFile) != ".xlsx") {
+            let latestFile = getMostRecentFileName(downloadFolderPath);
+            await delay(1000);
+        }
 
-
-    let SHIFTS = extractShifts(latestFile, emtPreceptors, paramedicPreceptors);
-    var numberOfShiftsExtracted = Object.keys(SHIFTS).length;
-    console.log(`${numberOfShiftsExtracted} shifts extracted`);
+        browser.close();
 
 
-    for (let shift in SHIFTS) {
+        let SHIFTS = extractShifts(latestFile, emtPreceptors, paramedicPreceptors);
+        var numberOfShiftsExtracted = Object.keys(SHIFTS).length;
+        console.log(`${numberOfShiftsExtracted} shifts extracted`);
 
-        let eventData = {
-            "eventName": `${SHIFTS[shift].truck} @ ${SHIFTS[shift].location} `,
-            "description": `Crew: ${SHIFTS[shift].crewOne} Crew: ${SHIFTS[shift].crewTwo}`,
-            "startTime": `${SHIFTS[shift].startDTG}`,
-            "endTime": `${SHIFTS[shift].endDTG}`
+        // TODO: break up into emt calendar and P calendar SHIFTS will be an obj with emt and P as childs. 
+        for (let shift in SHIFTS) {
+
+            let eventData = {
+                "eventName": `${SHIFTS[shift].truck} @ ${SHIFTS[shift].location} `,
+                "description": `Crew: ${SHIFTS[shift].crewOne} Crew: ${SHIFTS[shift].crewTwo}`,
+                "startTime": `${SHIFTS[shift].startDTG}`,
+                "endTime": `${SHIFTS[shift].endDTG}`
+            }
+
+            try {
+                addEventToCalendar(eventData, area.calendarIds.paramedic);
+            } catch (error) {
+                console.log("unable to add event to calendar: ", error);
+            }
+
+            await delay(500);
         }
 
         try {
-            addEventToCalendar(eventData);
+            let onCalendar: number = await countEventsOnCalendar(area.calendarIds.paramedic);
+            console.log(`${onCalendar} events created on calendar`)
         } catch (error) {
-            console.log("unable to add event to calendar: ", error);
+            console.log("unable to count number of events on calendar", error)
         }
 
-        await delay(500);
+        // TODO: Delete file when done. 
     }
-
-    try {
-        let onCalendar: number = await countEventsOnCalendar();
-        console.log(`${onCalendar} events created on calendar`)
-    } catch (error) {
-        console.log("unable to count number of events on calendar", error)
-    }
-
-    // TODO: Delete file when done. 
 }
-
 
 
 
@@ -102,5 +103,4 @@ function mergeAllActivePreceptors(e: string[], p: string[]): string[] {
     return allPreceptors;
 }
 
-//test();
 main();

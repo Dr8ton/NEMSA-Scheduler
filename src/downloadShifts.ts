@@ -1,11 +1,19 @@
 'use strict';
 require('dotenv').config();
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 import { delay } from './app';
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
-
-export async function getShiftExcelFile(){
+/**
+ * This will download the report from https://scheduling.acadian.com/CrewScheduler/MainMenu.aspx
+ * General Reports > Report : Daily Schedule (RAW)
+ * From todays date until one year from todays date. 
+ * 
+ * @param {number} region - the number of the HTML <select> option for the Region. Should be passed area.crewscheduler.region as an argument. 
+ * 
+ * @returns {Browser} browser - returns the browswer object so that it can be cloased after the download has completed. 
+ */
+export async function getShiftExcelFile(region:number){
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({ width: 900, height: 926 });
@@ -21,7 +29,7 @@ export async function getShiftExcelFile(){
     await page.select('#ddlReport', '313');
 
     await page.waitForSelector('#ddlRegion');
-    await page.select('#ddlRegion', '9');
+    await page.select('#ddlRegion', region.toString());
 
     await page.waitForSelector('#rbDates');
     await page.click('#rbDates');
@@ -30,11 +38,11 @@ export async function getShiftExcelFile(){
     let nextYear = new Date(today.getFullYear()+1, today.getMonth(), today.getDay());
 
     await page.waitForSelector('#dpStart_dateInput');
-    delay(3000);
+    delay(3000);// FIXME : Can I delete this?
     await page.type('#dpStart_dateInput', today.toLocaleDateString());
-    delay(3000);
+    delay(3000);// FIXME : Can I delete this?
     await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
-    delay(3000);
+    delay(3000);// FIXME : Can I delete this?
 
     await page.waitForSelector('#btnExport');
     await page.click('#btnExport');

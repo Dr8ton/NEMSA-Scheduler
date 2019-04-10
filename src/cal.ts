@@ -4,14 +4,14 @@ const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
 
 const googleCredentials = require('../secrets/key.json');
-
-export async function addEventToCalendar(event) {
+//TODO: Document this function
+export async function addEventToCalendar(event, calId: string) {
     let auth = authenticate();
     try {
         console.log(`Adding event: ${event.eventName} @ ${event.startTime}`)
         await calendar.events.insert({
             auth: auth,
-            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+            calendarId: calId,
             resource: {
                 // TODO : Change name to Truck @ LOC w/ Preceptor Name
                 'summary': event.eventName,
@@ -32,18 +32,17 @@ export async function addEventToCalendar(event) {
     }
 }
 
+//TODO: Document this function
 
-export async function clearCalendar() {
+export async function clearCalendar(calId: string) {
 
     let auth = authenticate();
     try {
         let e = await calendar.events.list({
             auth: auth,
-            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+            calendarId: calId,
             maxResults: 9999
         })
-        console.log(e);
-        console.log("list of events: " + e.data.items.length);
 
         for await (const i of e.data.items) {
             try {
@@ -70,14 +69,15 @@ export async function clearCalendar() {
 
 }
 
+//TODO: Document this function
 
-export async function countEventsOnCalendar(): Promise<number> {
+export async function countEventsOnCalendar(calId: string): Promise<number> {
 
     let auth = authenticate();
     try {
         let e = await calendar.events.list({
             auth: auth,
-            calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+            calendarId: calId,
             maxResults: 9999
         })
         console.log(e.data.items.length)
@@ -88,6 +88,7 @@ export async function countEventsOnCalendar(): Promise<number> {
 
 
 }
+//TODO: Document this function
 
 function authenticate() {
     const oAuth2Client = new OAuth2(

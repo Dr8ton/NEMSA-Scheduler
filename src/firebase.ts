@@ -24,7 +24,6 @@ var db = firebase.firestore();
  * @param {string} last: employee's last name
  * @param {boolean} active: is this an active prector
  * 
- * @returns {?} TODO: what does this method return???
  */
 export function addParamedicPreceptor(num: string, first: string, last: string, active: boolean): any {
   var docRef = db.collection('northshore').doc('preceptors').collection('paramedics');
@@ -38,8 +37,15 @@ export function addParamedicPreceptor(num: string, first: string, last: string, 
   var setMedic = docRef.doc(num).set(data)
 }
 
-export async function getAllActiveEMTPreceptors() {
-  let emtRef = await db.collection('northshore').doc('preceptors').collection('emts');
+/**
+ * gets all EMT preceptors that are Active . 
+ * 
+ * @param {string} region -  The region that to request Paramedic Preceptors.This should be the same as the DB https://console.firebase.google.com/
+ * 
+ * @returns {object} preceptor -   { active: boolean, firstName: string, lastName: string, id: string }
+ */
+export async function getAllActiveEMTPreceptors(region:string) {
+  let emtRef = await db.collection(region).doc('preceptors').collection('emts');
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors = [];
 
@@ -52,9 +58,15 @@ export async function getAllActiveEMTPreceptors() {
 
 }
 
-
-export async function getAllActiveParamedicPreceptors() {
-  let emtRef = await db.collection('northshore').doc('preceptors').collection('paramedics');
+/**
+ * gets all {Paramedic} preceptors that are Active . 
+ * 
+ * @param {string} region -  The region that to request EMT Preceptors.This should be the same as the DB https://console.firebase.google.com/
+ * 
+ * @returns {object} preceptor -   { active: boolean, firstName: string, lastName: string, id: string }
+ */
+export async function getAllActiveParamedicPreceptors(region:string) {
+  let emtRef = await db.collection(region).doc('preceptors').collection('paramedics');
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors = [];
 

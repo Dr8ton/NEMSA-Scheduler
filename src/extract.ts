@@ -78,21 +78,20 @@ const emtPrecetors = [
         id: '027207'
     }];
 const paramedicPreceptors = [];
+//TODO: Document this function
 
 export function extractShifts(fileName: string, emts: object[], medics: object[]) {
     //TODO: pass in preceptors from DB
 
-
     let dl = path.join(downloadsFolder(), fileName);
 
-
     //testing
-    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    let dataFromReport = testReport[0].data
+    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    // let dataFromReport = testReport[0].data
 
     //working setup
-    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    // let dataFromReport = workSheetsFromFile[0].data
+    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {
@@ -168,28 +167,13 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
             }
         }
     });
-    console.log(shifts)
     return shifts;
 }
 
-//'SchedShiftID',0, unique ID of shift
-//  'ShiftName',1, truck full name
-//  'LocationCode',2 station
-
-//  'ShiftDate',3 date but not time of start or finish
-//  'StartTime',4 DTG that shift starts
-//  'EndTime',5 DTG that the shift ends
-//  'Notes',6 STUDENT/RIDER: ${student}
-
-//  PlannedRes1, 10 truck number 
-
-//  'PlannedRes2',15, crewOne
-//  'ActualRes2',16 replacedOne
-
-//  'PlannedRes3',20, crewTwo
-//  'ActualRes3',21, replacedTwo
 
 
+
+//TODO: Document this function
 
 function isActivePreceptor(crewId: string, activePreceptors): boolean {
     return activePreceptors.id.includes(formatEmployeeId(crewId));
@@ -218,6 +202,7 @@ function isSprintTruck(truckNumber: string): boolean {
 
     return sprintTrucks.includes(truckNumber);
 }
+//TODO: Document this function
 
 function alreadyHasStudent(notes: string): boolean {
     if (notes === undefined) {
@@ -226,6 +211,7 @@ function alreadyHasStudent(notes: string): boolean {
         return notes.includes("STUDENT/RIDER:")
     }
 }
+//TODO: Document this function
 
 function formatEmployeeId(id: string): string {
     if (id === undefined) {
@@ -233,6 +219,7 @@ function formatEmployeeId(id: string): string {
     }
     return id.slice(0, 6);
 }
+//TODO: Document this function
 
 function formatDTG(d: string) {
     var m = moment(d);
@@ -240,4 +227,3 @@ function formatDTG(d: string) {
     return roundUp.toISOString();
 }
 
-//extractShifts(); 
