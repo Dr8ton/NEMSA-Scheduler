@@ -7,8 +7,6 @@ import { extractShifts } from "./extract";
 import { addEventToCalendar, clearCalendar, countEventsOnCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 
-//import {extractShifts} from './extract'; 
-
 require('dotenv').config();
 const downloadFolderPath = downloadsFolder();
 
@@ -20,7 +18,8 @@ async function main() {
     //get lists of preceptors
     const emtPreceptors = await getAllActiveEMTPreceptors();
     const paramedicPreceptors = await getAllActiveParamedicPreceptors();
-    const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
+    // FIXME
+    // const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
 
     //download shift report
     let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
