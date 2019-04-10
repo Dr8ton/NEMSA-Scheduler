@@ -18,8 +18,8 @@ async function main() {
     //get lists of preceptors
     const emtPreceptors = await getAllActiveEMTPreceptors();
     const paramedicPreceptors = await getAllActiveParamedicPreceptors();
-    // FIXME
-    // const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
+ 
+    const allPreceptors = mergeAllActivePreceptors(emtPreceptors, paramedicPreceptors);
 
     //download shift report
     let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
@@ -42,7 +42,7 @@ async function main() {
     browser.close();
 
 
-    let SHIFTS = extractShifts(latestFile);
+    let SHIFTS = extractShifts(latestFile, emtPreceptors, paramedicPreceptors);
     var numberOfShiftsExtracted = Object.keys(SHIFTS).length;
     console.log(`${numberOfShiftsExtracted} shifts extracted`);
 
@@ -72,6 +72,7 @@ async function main() {
         console.log("unable to count number of events on calendar", error)
     }
 
+    // TODO: Delete file when done. 
 }
 
 

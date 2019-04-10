@@ -37,7 +37,7 @@ export function addParamedicPreceptor(num: string, first: string, last: string, 
 
   var setMedic = docRef.doc(num).set(data)
 }
-// FIXME
+
 export async function getAllActiveEMTPreceptors() {
   let emtRef = await db.collection('northshore').doc('preceptors').collection('emts');
   let activeEmts = await emtRef.where('active', '==', true).get();
@@ -63,14 +63,6 @@ export async function getAllActiveParamedicPreceptors() {
     x.id = emt.id;
     preceptors.push(x);
   }
-  console.log(preceptors);
   return preceptors;
 }
-
-// export async function getAllActivePreceptors() {
-//   let p = await getAllActiveParamedicPreceptors();
-//   let e = await getAllActiveEMTPreceptors();
-//   let preceptors: string[] = p.concat(e);
-//   return preceptors;
-// }
 

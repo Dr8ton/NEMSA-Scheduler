@@ -3,90 +3,102 @@ import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import moment from 'moment';
 
+const emtPrecetors = [
+    { active: true, id: '000000' },
+    {
+        active: true,
+        firstName: 'Brittany',
+        lastName: 'Baham',
+        id: '017652'
+    },
+    {
+        active: true,
+        firstName: 'Nick',
+        lastName: 'Ziegler',
+        id: '018823'
+    },
+    {
+        active: true,
+        firstName: 'Brandi',
+        lastName: 'Hidalgo',
+        id: '022725'
+    },
+    {
+        active: true,
+        firstName: 'Aaron',
+        lastName: 'Brock',
+        id: '023205'
+    },
+    {
+        active: true,
+        firstName: 'Lynn (Jaimie)',
+        lastName: 'Menne',
+        id: '023407'
+    },
+    {
+        active: true,
+        firstName: 'Carmen',
+        lastName: 'Edmonds',
+        id: '023943'
+    },
+    {
+        active: true,
+        firstName: 'Summer',
+        lastName: 'Booth',
+        id: '024521'
+    },
+    {
+        active: true,
+        firstName: 'David',
+        lastName: 'Patterson',
+        id: '026049'
+    },
+    {
+        active: true,
+        firstName: 'Autum',
+        lastName: 'Scharwarth',
+        id: '026226'
+    },
+    {
+        active: true,
+        firstName: 'Jacob',
+        lastName: 'Peterson',
+        id: '026417'
+    },
+    {
+        active: true,
+        firstName: 'Jonathan',
+        lastName: 'Lee',
+        id: '026721'
+    },
+    {
+        active: true,
+        firstName: 'Charles (Trey)',
+        lastName: 'Crouse',
+        id: '027207'
+    }];
+const paramedicPreceptors = [];
 
-export function extractShifts(fileName: string) {
+export function extractShifts(fileName: string, emts: object[], medics: object[]) {
     //TODO: pass in preceptors from DB
-    let preceptors = ['012073',
-        '012862',
-        '012897',
-        '014412',
-        '014853',
-        '014898',
-        '015114',
-        '015124',
-        '015130',
-        '015138',
-        '015942',
-        '015963',
-        '016311',
-        '016894',
-        '017059',
-        '017179',
-        '017189',
-        '017224',
-        '017462',
-        '017567',
-        '017652',
-        '017781',
-        '017816',
-        '018124',
-        '018313',
-        '018823',
-        '018919',
-        '019471',
-        '019852',
-        '020307',
-        '020755',
-        '020780',
-        '020867',
-        '021879',
-        '022194',
-        '022330',
-        '022593',
-        '022725',
-        '022746',
-        '023205',
-        '023407',
-        '023491',
-        '023717',
-        '023733',
-        '023828',
-        '023943',
-        '024057',
-        '024168',
-        '024521',
-        '026049',
-        '026226',
-        '026417',
-        '026721',
-        '027207',
-        '000000',
-        '017652',
-        '018823',
-        '022725',
-        '023205',
-        '023407',
-        '023943',
-        '024521',
-        '026049',
-        '026226',
-        '026417',
-        '026721',
-        '027207'];
+
 
     let dl = path.join(downloadsFolder(), fileName);
 
 
     //testing
-    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    // let dataFromReport = testReport[0].data
+    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    let dataFromReport = testReport[0].data
 
     //working setup
-    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    let dataFromReport = workSheetsFromFile[0].data
+    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    // let dataFromReport = workSheetsFromFile[0].data
 
 
-    let shifts = {};
+    let shifts = {
+        emt: {},
+        paramedic: {}
+    }
 
     dataFromReport.forEach((e) => {
 
@@ -106,22 +118,57 @@ export function extractShifts(fileName: string) {
         let one: string = e[16] === undefined ? e[15] : e[16];
         let two: string = e[21] === undefined ? e[20] : e[21];
 
-        if (!isActivePreceptor(one, preceptors) && !isActivePreceptor(two, preceptors)) {
-            return;
+
+
+        // emt branch
+        if (isActivePreceptor(one, emts)) {
+            let key: string = e[0];
+
+            shifts.emt[key] = {
+                crew: formatEmployeeId(one),
+                location: e[2],
+                startDTG: `${formatDTG(e[4])}`,
+                endDTG: `${formatDTG(e[5])}`,
+                truck: e[10]
+            }
+        } else if (isActivePreceptor(two, emts)) {
+            let key: string = e[0];
+
+            shifts.emt[key] = {
+                crew: formatEmployeeId(two),
+                location: e[2],
+                startDTG: `${formatDTG(e[4])}`,
+                endDTG: `${formatDTG(e[5])}`,
+                truck: e[10]
+
+            }
         }
 
-        let key: string = e[0];
+        // medic branch
+        if (isActivePreceptor(one, medics)) {
+            let key: string = e[0];
 
-        shifts[key] = {
-            crewOne: formatEmployeeId(one),
-            crewTwo: formatEmployeeId(two),
-            location: e[2],
-            startDTG: `${formatDTG(e[4])}`,
-            endDTG: `${formatDTG(e[5])}`, 
-            truck: e[10]
+            shifts.paramedic[key] = {
+                crew: formatEmployeeId(one),
+                location: e[2],
+                startDTG: `${formatDTG(e[4])}`,
+                endDTG: `${formatDTG(e[5])}`,
+                truck: e[10]
+            }
+        } else if (isActivePreceptor(two, medics)) {
+            let key: string = e[0];
+
+            shifts.paramedic[key] = {
+                crew: formatEmployeeId(two),
+                location: e[2],
+                startDTG: `${formatDTG(e[4])}`,
+                endDTG: `${formatDTG(e[5])}`,
+                truck: e[10]
+
+            }
         }
-        //https://github.com/moment/moment/issues/3256
     });
+    console.log(shifts)
     return shifts;
 }
 
@@ -144,8 +191,8 @@ export function extractShifts(fileName: string) {
 
 
 
-function isActivePreceptor(crewId: string, activePreceptors: string[]): boolean {
-    return activePreceptors.includes(formatEmployeeId(crewId));
+function isActivePreceptor(crewId: string, activePreceptors): boolean {
+    return activePreceptors.id.includes(formatEmployeeId(crewId));
 }
 
 /**
@@ -190,5 +237,7 @@ function formatEmployeeId(id: string): string {
 function formatDTG(d: string) {
     var m = moment(d);
     var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
-    return roundUp.toISOString(); 
+    return roundUp.toISOString();
 }
+
+//extractShifts(); 
