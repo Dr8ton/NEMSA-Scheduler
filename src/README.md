@@ -8,4 +8,23 @@ https://github.com/exceljs/exceljs
 
 Store data in Firestore. 
 
-Document functions: https://make.wordpress.org/core/handbook/best-practices/inline-documentation-standards/javascript/#functions
+authentication : https://medium.com/@smccartney09/integrating-firebase-cloud-functions-with-google-calendar-api-9a5ac042e869
+
+Document functions: http://usejsdoc.org/index.html#block-tags
+
+//'SchedShiftID',0, unique ID of shift
+//  'ShiftName',1, truck full name
+//  'LocationCode',2 station
+
+//  'ShiftDate',3 date but not time of start or finish
+//  'StartTime',4 DTG that shift starts
+//  'EndTime',5 DTG that the shift ends
+//  'Notes',6 STUDENT/RIDER: ${student}
+
+//  PlannedRes1, 10 truck number 
+
+//  'PlannedRes2',15, crewOne
+//  'ActualRes2',16 replacedOne
+
+//  'PlannedRes3',20, crewTwo
+//  'ActualRes3',21, replacedTwo
