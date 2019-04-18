@@ -1,3 +1,5 @@
+import { AREAS } from "./AREAS";
+
 // DOCs - https://firebase.google.com/docs/reference/js/?authuser=0
 const firebase = require("firebase");
 // Required for side-effects

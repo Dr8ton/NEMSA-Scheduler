@@ -77,7 +77,259 @@ const emtPrecetors = [
         lastName: 'Crouse',
         id: '027207'
     }];
-const paramedicPreceptors = [];
+const paramedicPreceptors = [
+    {
+        active: true,
+        firstName: 'Shannon',
+        lastName: 'Gerlinger',
+        id: '012073'
+    },
+    {
+        active: true,
+        firstName: 'Darren',
+        lastName: 'Tanner',
+        id: '012862'
+    },
+    {
+        active: true,
+        firstName: 'Glen',
+        lastName: 'Samuels',
+        id: '012897'
+    },
+    {
+        active: true,
+        firstName: 'Troy',
+        lastName: 'Bellanger',
+        id: '014412'
+    },
+    {
+        active: true,
+        firstName: 'Chris',
+        lastName: 'Harshbarger',
+        id: '014853'
+    },
+    {
+        active: true,
+        firstName: 'Kevin',
+        lastName: 'Thomas',
+        id: '014898'
+    },
+    {
+        active: true,
+        firstName: 'Markus',
+        lastName: 'Jenkins',
+        id: '015114'
+    },
+    {
+        active: true,
+        firstName: 'Michelle',
+        lastName: 'Collins',
+        id: '015124'
+    },
+    {
+        active: true,
+        firstName: 'Clinton',
+        lastName: 'Blades',
+        id: '015130'
+    },
+    {
+        active: true,
+        firstName: 'Jennifer',
+        lastName: 'Battistella',
+        id: '015138'
+    },
+    {
+        active: true,
+        firstName: 'Michael',
+        lastName: 'Waguespak',
+        id: '015942'
+    },
+    {
+        active: true,
+        firstName: 'Thorn',
+        lastName: 'Phillips',
+        id: '015963'
+    },
+    {
+        active: true,
+        firstName: 'Tabby',
+        lastName: 'Valencia',
+        id: '016311'
+    },
+    {
+        active: true,
+        firstName: 'Candice',
+        lastName: 'Ziegler',
+        id: '016894'
+    },
+    {
+        active: true,
+        firstName: 'Andrew - PT',
+        lastName: 'Rhodes',
+        id: '017059'
+    },
+    {
+        active: true,
+        firstName: 'Steven',
+        lastName: 'Brockhoeft',
+        id: '017179'
+    },
+    {
+        active: true,
+        firstName: 'Jessica',
+        lastName: 'Johnson',
+        id: '017189'
+    },
+    {
+        active: true,
+        firstName: 'Nick',
+        lastName: 'Munlin',
+        id: '017224'
+    },
+    {
+        active: true,
+        firstName: 'Jessica',
+        lastName: 'Tardo',
+        id: '017462'
+    },
+    {
+        active: true,
+        firstName: 'Jimmy',
+        lastName: 'Hill',
+        id: '017567'
+    },
+    {
+        active: true,
+        firstName: 'Crystal',
+        lastName: 'Conn',
+        id: '017781'
+    },
+    {
+        active: true,
+        firstName: 'Billy',
+        lastName: 'Albritton',
+        id: '017816'
+    },
+    {
+        active: true,
+        firstName: 'Matt',
+        lastName: 'Primeaux',
+        id: '018124'
+    },
+    {
+        active: true,
+        firstName: 'Kevin',
+        lastName: 'Hopkins',
+        id: '018313'
+    },
+    {
+        active: true,
+        firstName: 'Max',
+        lastName: 'Garrison',
+        id: '018919'
+    },
+    {
+        active: true,
+        firstName: 'Jade',
+        lastName: 'McClendon',
+        id: '019471'
+    },
+    {
+        active: true,
+        firstName: 'Korey',
+        lastName: 'Touchet',
+        id: '019852'
+    },
+    {
+        active: true,
+        firstName: 'John',
+        lastName: 'Fortner',
+        id: '020307'
+    },
+    {
+        active: true,
+        firstName: 'Eric',
+        lastName: 'Hinebaugh',
+        id: '020755'
+    },
+    {
+        active: true,
+        firstName: 'Drayton',
+        lastName: 'Kittel',
+        id: '020780'
+    },
+    {
+        active: true,
+        firstName: 'Beau',
+        lastName: 'Fournier',
+        id: '020867'
+    },
+    {
+        active: true,
+        firstName: 'Joey',
+        lastName: 'Sanchez',
+        id: '021879'
+    },
+    {
+        active: true,
+        firstName: 'Cameron',
+        lastName: 'Watts',
+        id: '022194'
+    },
+    {
+        active: true,
+        firstName: 'Christine',
+        lastName: 'Guise',
+        id: '022330'
+    },
+    {
+        active: true,
+        firstName: 'David',
+        lastName: 'Robertson',
+        id: '022593'
+    },
+    {
+        active: true,
+        firstName: 'Rebekah',
+        lastName: 'Cummings',
+        id: '022746'
+    },
+    {
+        active: true,
+        firstName: 'Brett',
+        lastName: 'Bosarge',
+        id: '023491'
+    },
+    {
+        active: true,
+        firstName: 'Michael',
+        lastName: 'Holland',
+        id: '023717'
+    },
+    {
+        active: true,
+        firstName: 'Casey',
+        lastName: 'Paille',
+        id: '023733'
+    },
+    {
+        active: true,
+        firstName: 'Dorothy',
+        lastName: 'Harper',
+        id: '023828'
+    },
+    {
+        active: true,
+        firstName: 'Nicholas',
+        lastName: 'Bubrig',
+        id: '024057'
+    },
+    {
+        active: true,
+        firstName: 'Jennifer',
+        lastName: 'Comeaux',
+        id: '024168'
+    }];
 //TODO: Document this function
 
 export function extractShifts(fileName: string, emts: object[], medics: object[]) {
@@ -86,12 +338,12 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
     let dl = path.join(downloadsFolder(), fileName);
 
     //testing
-    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    // let dataFromReport = testReport[0].data
+    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    let dataFromReport = testReport[0].data
 
     //working setup
-    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    let dataFromReport = workSheetsFromFile[0].data
+    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    // let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {
@@ -114,13 +366,14 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
             return;
         }
 
-        let one: string = e[16] === undefined ? e[15] : e[16];
-        let two: string = e[21] === undefined ? e[20] : e[21];
+        let one: string = e[16] === undefined ? formatEmployeeId(e[15]) : formatEmployeeId(e[16]);
+        let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
 
 
 
         // emt branch
         if (isActivePreceptor(one, emts)) {
+
             let key: string = e[0];
 
             shifts.emt[key] = {
@@ -131,6 +384,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
                 truck: e[10]
             }
         } else if (isActivePreceptor(two, emts)) {
+
             let key: string = e[0];
 
             shifts.emt[key] = {
@@ -145,6 +399,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
 
         // medic branch
         if (isActivePreceptor(one, medics)) {
+
             let key: string = e[0];
 
             shifts.paramedic[key] = {
@@ -155,6 +410,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
                 truck: e[10]
             }
         } else if (isActivePreceptor(two, medics)) {
+
             let key: string = e[0];
 
             shifts.paramedic[key] = {
@@ -176,7 +432,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
 //TODO: Document this function
 
 function isActivePreceptor(crewId: string, activePreceptors): boolean {
-    return activePreceptors.id.includes(formatEmployeeId(crewId));
+    return activePreceptors.some((e: { id: string; }) => e.id === crewId);
 }
 
 /**
