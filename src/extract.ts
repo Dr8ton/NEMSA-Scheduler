@@ -377,7 +377,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
             let key: string = e[0];
 
             shifts.emt[key] = {
-                crew: formatEmployeeId(one),
+                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
                 location: e[2],
                 startDTG: `${formatDTG(e[4])}`,
                 endDTG: `${formatDTG(e[5])}`,
@@ -423,6 +423,7 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
             }
         }
     });
+    console.log(shifts.emt); 
     return shifts;
 }
 
@@ -483,3 +484,4 @@ function formatDTG(d: string) {
     return roundUp.toISOString();
 }
 
+extractShifts("test", emtPrecetors, paramedicPreceptors); 
