@@ -1,7 +1,7 @@
 var xlsx = require('node-xlsx').default;
-import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import moment from 'moment';
+import downloadsFolder = require('downloads-folder');
 
 const emtPrecetors = [
     { active: true, id: '000000' },
@@ -330,7 +330,8 @@ const paramedicPreceptors = [
         lastName: 'Comeaux',
         id: '024168'
     }];
-//TODO: Document this function
+
+    //TODO: Document this function
 
 export function extractShifts(fileName: string, emts: object[], medics: object[]) {
     //TODO: pass in preceptors from DB
@@ -338,12 +339,12 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
     let dl = path.join(downloadsFolder(), fileName);
 
     //testing
-    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    let dataFromReport = testReport[0].data
+    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    // let dataFromReport = testReport[0].data
 
     //working setup
-    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    // let dataFromReport = workSheetsFromFile[0].data
+    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {
