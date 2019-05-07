@@ -18,7 +18,8 @@ async function main() {
         await clearCalendar(area.calendarIds.emt);
         await clearCalendar(area.calendarIds.paramedic);
 
-        //get lists of preceptors
+        //get lists of 
+        // TODO: use Promise.all
         const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
         const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
 
