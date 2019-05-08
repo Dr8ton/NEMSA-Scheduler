@@ -7,7 +7,6 @@ import downloadsFolder = require('downloads-folder');
     //TODO: Document this function
 
 export function extractShifts(fileName: string, emts: object[], medics: object[]) {
-    //TODO: pass in preceptors from DB
 
     let dl = path.join(downloadsFolder(), fileName);
 
@@ -15,14 +14,14 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
     // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
     // let dataFromReport = testReport[0].data
 
-    //working setup
+    // //working setup
     const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
     let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {
-        emt: {},
-        paramedic: {}
+        emt: [],
+        paramedic: []
     }
 
     dataFromReport.forEach((e) => {
@@ -48,27 +47,26 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
         // emt branch
         if (isActivePreceptor(one, emts)) {
 
-            let key: string = e[0];
-
-            shifts.emt[key] = {
+            shifts.emt.push(
+                {id:e[0],
                 crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
                 location: e[2],
                 startDTG: `${formatDTG(e[4])}`,
                 endDTG: `${formatDTG(e[5])}`,
                 truck: e[10]
-            }
+            });
         } else if (isActivePreceptor(two, emts)) {
 
             let key: string = e[0];
 
-            shifts.emt[key] = {
-                crew: formatEmployeeId(two),
+            shifts.emt.push(
+                {id:e[0],
+                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
                 location: e[2],
                 startDTG: `${formatDTG(e[4])}`,
                 endDTG: `${formatDTG(e[5])}`,
                 truck: e[10]
-
-            }
+            });
         }
 
         // medic branch
@@ -76,28 +74,28 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
 
             let key: string = e[0];
 
-            shifts.paramedic[key] = {
-                crew: formatEmployeeId(one),
+            shifts.paramedic.push(
+                {id:e[0],
+                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
                 location: e[2],
                 startDTG: `${formatDTG(e[4])}`,
                 endDTG: `${formatDTG(e[5])}`,
                 truck: e[10]
-            }
+            });
         } else if (isActivePreceptor(two, medics)) {
 
             let key: string = e[0];
 
-            shifts.paramedic[key] = {
-                crew: formatEmployeeId(two),
+            shifts.paramedic.push(
+                {id:e[0],
+                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
                 location: e[2],
                 startDTG: `${formatDTG(e[4])}`,
                 endDTG: `${formatDTG(e[5])}`,
                 truck: e[10]
-
-            }
+            });
         }
     });
-    console.log(shifts.emt); 
     return shifts;
 }
 
