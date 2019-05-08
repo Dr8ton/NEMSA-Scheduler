@@ -15,64 +15,47 @@ async function main() {
     for (const area of AREAS) {
 
         //erease previous data from calendar. 
-        await clearCalendar(area.calendarIds.emt);
-        await clearCalendar(area.calendarIds.paramedic);
+        clearBothCalendarsForThisArea(area);
 
         //get lists of 
+        // TODO: use cache to save calls to DB
         // TODO: use Promise.all
         const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
         const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
-
-        //download shift report
-        let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
-        let browser = await downloadShifts.getShiftExcelFile(area.crewscheduler.region);
-        let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
-
-        while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
-            console.log(`waiting for download to finish`);
-            numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
-            await delay(1000);
-        }
-
-        let latestFile = getMostRecentFileName(downloadFolderPath);
-
-        while (path.extname(latestFile) != ".xlsx") {
-            let latestFile = getMostRecentFileName(downloadFolderPath);
-            await delay(1000);
-        }
-
-        browser.close();
+        let shiftReport = await downloadReport(area);
 
 
-        let SHIFTS = extractShifts(latestFile, emtPreceptors, paramedicPreceptors);
+
+        let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
         var numberOfShiftsExtracted = Object.keys(SHIFTS).length;
         console.log(`${numberOfShiftsExtracted} shifts extracted`);
 
         // TODO: break up into emt calendar and P calendar SHIFTS will be an obj with emt and P as childs. 
-        for (let shift in SHIFTS) {
+        START HERE
+        for (let shift in SHIFTS.paramedic) {
+            console.log(shift);
+            // let eventData = {
+            //     "eventName": `${SHIFTS[shift].truck} @ ${SHIFTS[shift].location} `,
+            //     "description": `Crew: ${SHIFTS[shift].crewOne} Crew: ${SHIFTS[shift].crewTwo}`,
+            //     "startTime": `${SHIFTS[shift].startDTG}`,
+            //     "endTime": `${SHIFTS[shift].endDTG}`
+            // }
 
-            let eventData = {
-                "eventName": `${SHIFTS[shift].truck} @ ${SHIFTS[shift].location} `,
-                "description": `Crew: ${SHIFTS[shift].crewOne} Crew: ${SHIFTS[shift].crewTwo}`,
-                "startTime": `${SHIFTS[shift].startDTG}`,
-                "endTime": `${SHIFTS[shift].endDTG}`
-            }
+            // try {
+            //     addEventToCalendar(eventData, area.calendarIds.paramedic);
+            // } catch (error) {
+            //     console.log("unable to add event to calendar: ", error);
+            // }
 
-            try {
-                addEventToCalendar(eventData, area.calendarIds.paramedic);
-            } catch (error) {
-                console.log("unable to add event to calendar: ", error);
-            }
-
-            await delay(500);
+            // await delay(500);
         }
 
-        try {
-            let onCalendar: number = await countEventsOnCalendar(area.calendarIds.paramedic);
-            console.log(`${onCalendar} events created on calendar`)
-        } catch (error) {
-            console.log("unable to count number of events on calendar", error)
-        }
+        // try {
+        //     let onCalendar: number = await countEventsOnCalendar(area.calendarIds.paramedic);
+        //     console.log(`${onCalendar} events created on calendar`)
+        // } catch (error) {
+        //     console.log("unable to count number of events on calendar", error)
+        // }
 
         // TODO: Delete file when done. 
     }
@@ -99,9 +82,30 @@ export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function mergeAllActivePreceptors(e: string[], p: string[]): string[] {
-    let allPreceptors: string[] = p.concat(e);
-    return allPreceptors;
+async function clearBothCalendarsForThisArea(area) {
+    await clearCalendar(area.calendarIds.emt);
+    await clearCalendar(area.calendarIds.paramedic);
 }
 
+async function downloadReport(area) {
+    let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
+    let browser = await downloadShifts.getShiftExcelFile(area.crewscheduler.region);
+    let numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+
+    while (numberOfFilesBeforeDownload === numberOfFilesAfterDownload) {
+        console.log(`waiting for download to finish`);
+        numberOfFilesAfterDownload = fs.readdirSync(downloadFolderPath).length;
+        await delay(1000);
+    }
+
+    let latestFile = getMostRecentFileName(downloadFolderPath);
+
+    while (path.extname(latestFile) != ".xlsx") {
+        let latestFile = getMostRecentFileName(downloadFolderPath);
+        await delay(1000);
+    }
+
+    browser.close();
+    return latestFile;
+}
 main();
