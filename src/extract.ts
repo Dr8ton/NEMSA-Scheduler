@@ -11,12 +11,12 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
     let dl = path.join(downloadsFolder(), fileName);
 
     //testing
-    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    // let dataFromReport = testReport[0].data
+    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    let dataFromReport = testReport[0].data
 
     // //working setup
-    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    let dataFromReport = workSheetsFromFile[0].data
+    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    // let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {

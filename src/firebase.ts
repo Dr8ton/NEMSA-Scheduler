@@ -80,3 +80,22 @@ export async function getAllActiveParamedicPreceptors(region:string) {
   return preceptors;
 }
 
+export async function preceptorsAsObj(region:string) {
+  let emtRef = await db.collection(region).doc('preceptors').collection('paramedics');
+  let activeEmts = await emtRef.where('active', '==', true).get();
+  let preceptors; 
+  
+  for (let emt of activeEmts.docs) {
+    let x = emt.data();
+    x.id = emt.id;
+
+  }
+  return preceptors;
+}
+
+async function test(){
+  let p = await preceptorsAsObj("northshore");
+  console.log(p)
+}
+
+test(); 
