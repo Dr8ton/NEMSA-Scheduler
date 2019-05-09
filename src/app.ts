@@ -22,6 +22,7 @@ async function main() {
 
         // TODO: use cache to save calls to DB
         // TODO: use Promise.all
+        // https://hackernoon.com/async-await-essentials-for-production-loops-control-flows-limits-23eb40f171bd
 
 
         const emtPreceptors = await getAllActiveEMTPreceptors(area.name);

@@ -51,13 +51,13 @@ export async function clearCalendar(calId: string) {
 
                 var params = {
                     auth: auth,
-                    calendarId: 'jk6907osaor1ku6gnh3uput0gc@group.calendar.google.com',
+                    calendarId: calId,
                     eventId: i.id,
                 };
                 await calendar.events.delete(params);
 
             } catch (error) {
-                console.log(`unable to delete: ${i.id}: ${error}`);
+                console.log(`unable to delete: ${i.summary} on ${i.start.dateTime}: ${error}`);
 
             }
 
