@@ -40,62 +40,38 @@ export function addParamedicPreceptor(num: string, first: string, last: string, 
 }
 
 /**
- * gets all EMT preceptors that are Active . 
+ * gets all {EMT} preceptors that are Active . 
  * 
- * @param {string} region -  The region that to request Paramedic Preceptors.This should be the same as the DB https://console.firebase.google.com/
+ * @param {string} region -  The region that to request EMT Preceptors.This should be the same as the DB https://console.firebase.google.com/
  * 
- * @returns {object} preceptor -   { active: boolean, firstName: string, lastName: string, id: string }
+ * @returns {object} preceptor -    '000000': { active: true, firstName: 'jonn', lastName: 'smith' },
  */
-export async function getAllActiveEMTPreceptors(region:string) {
+export async function getAllActiveEMTPreceptors(region: string) {
   let emtRef = await db.collection(region).doc('preceptors').collection('emts');
   let activeEmts = await emtRef.where('active', '==', true).get();
-  let preceptors = [];
+  let preceptors= {};
 
   for (let emt of activeEmts.docs) {
-    let x = emt.data();
-    x.id = emt.id;
-    preceptors.push(x);
+   preceptors[emt.id]=emt.data();
   }
   return preceptors;
-
 }
 
 /**
  * gets all {Paramedic} preceptors that are Active . 
  * 
- * @param {string} region -  The region that to request EMT Preceptors.This should be the same as the DB https://console.firebase.google.com/
+ * @param {string} region -  The region that to request Paramedic Preceptors.This should be the same as the DB https://console.firebase.google.com/
  * 
- * @returns {object} preceptor -   { active: boolean, firstName: string, lastName: string, id: string }
+ * @returns {object} preceptor -    '000000': { active: true, firstName: 'jonn', lastName: 'smith' },
  */
-export async function getAllActiveParamedicPreceptors(region:string) {
+export async function getAllActiveParamedicPreceptors(region: string) {
   let emtRef = await db.collection(region).doc('preceptors').collection('paramedics');
   let activeEmts = await emtRef.where('active', '==', true).get();
-  let preceptors = [];
+  let preceptors= {};
 
   for (let emt of activeEmts.docs) {
-    let x = emt.data();
-    x.id = emt.id;
-    preceptors.push(x);
+   preceptors[emt.id]=emt.data();
   }
   return preceptors;
 }
 
-export async function preceptorsAsObj(region:string) {
-  let emtRef = await db.collection(region).doc('preceptors').collection('paramedics');
-  let activeEmts = await emtRef.where('active', '==', true).get();
-  let preceptors; 
-  
-  for (let emt of activeEmts.docs) {
-    let x = emt.data();
-    x.id = emt.id;
-
-  }
-  return preceptors;
-}
-
-async function test(){
-  let p = await preceptorsAsObj("northshore");
-  console.log(p)
-}
-
-test(); 

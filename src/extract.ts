@@ -4,19 +4,19 @@ import moment from 'moment';
 import downloadsFolder = require('downloads-folder');
 
 
-    //TODO: Document this function
+//TODO: Document this function
 
-export function extractShifts(fileName: string, emts: object[], medics: object[]) {
+export function extractShifts(fileName: string, emts:object, medics: object) {
 
     let dl = path.join(downloadsFolder(), fileName);
 
     //testing
-    const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    let dataFromReport = testReport[0].data
+    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
+    // let dataFromReport = testReport[0].data
 
     // //working setup
-    // const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    // let dataFromReport = workSheetsFromFile[0].data
+    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
+    let dataFromReport = workSheetsFromFile[0].data
 
 
     let shifts = {
@@ -43,69 +43,55 @@ export function extractShifts(fileName: string, emts: object[], medics: object[]
         let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
 
 
-
         // emt branch
-        if (isActivePreceptor(one, emts)) {
 
+        if (emts[one]) {
             shifts.emt.push(
-                {id:e[0],
-                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
-                location: e[2],
-                startDTG: `${formatDTG(e[4])}`,
-                endDTG: `${formatDTG(e[5])}`,
-                truck: e[10]
-            });
-        } else if (isActivePreceptor(two, emts)) {
-
-            let key: string = e[0];
-
+                {
+                    id: e[0],
+                    crew: `${emts[one].firstName} ${emts[one].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        } else if (emts[two]) {
             shifts.emt.push(
-                {id:e[0],
-                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
-                location: e[2],
-                startDTG: `${formatDTG(e[4])}`,
-                endDTG: `${formatDTG(e[5])}`,
-                truck: e[10]
-            });
+                {
+                    id: e[0],
+                    crew: `${emts[two].firstName} ${emts[two].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
         }
 
         // medic branch
-        if (isActivePreceptor(one, medics)) {
 
-            let key: string = e[0];
-
+        if (medics[one]) {
             shifts.paramedic.push(
-                {id:e[0],
-                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
-                location: e[2],
-                startDTG: `${formatDTG(e[4])}`,
-                endDTG: `${formatDTG(e[5])}`,
-                truck: e[10]
-            });
-        } else if (isActivePreceptor(two, medics)) {
-
-            let key: string = e[0];
-
+                {
+                    id: e[0],
+                    crew: `${medics[one].firstName} ${medics[one].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        } else if (medics[two]) {
             shifts.paramedic.push(
-                {id:e[0],
-                crew: formatEmployeeId(one), // TODO: format this as a name not as number. 
-                location: e[2],
-                startDTG: `${formatDTG(e[4])}`,
-                endDTG: `${formatDTG(e[5])}`,
-                truck: e[10]
-            });
+                {
+                    id: e[0],
+                    crew: `${medics[two].firstName} ${medics[two].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
         }
     });
     return shifts;
-}
-
-
-
-
-//TODO: Document this function
-
-function isActivePreceptor(crewId: string, activePreceptors): boolean {
-    return activePreceptors.some((e: { id: string; }) => e.id === crewId);
 }
 
 /**
@@ -131,8 +117,8 @@ function isSprintTruck(truckNumber: string): boolean {
 
     return sprintTrucks.includes(truckNumber);
 }
-//TODO: Document this function
 
+//TODO: Document this function
 function alreadyHasStudent(notes: string): boolean {
     if (notes === undefined) {
         return false;
