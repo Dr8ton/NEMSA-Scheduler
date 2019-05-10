@@ -31,9 +31,7 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
             return;
         }
 
-        if (alreadyHasStudent(e[6])) {
-            return;
-        }
+
 
         if (e[1] === 'OS') {
             return;
@@ -42,7 +40,20 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
         let one: string = e[16] === undefined ? formatEmployeeId(e[15]) : formatEmployeeId(e[16]);
         let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
 
-
+        if (alreadyHasStudent(e[6])) {
+            if(medics[one] || medics[two]){
+                return
+            }else if(emts[one]){
+                console.log(`${e[6]} is riding with ${emts[one].firstName} ${emts[one].lastName}. Confrim this student is not above the preceptors level. `);
+                return; 
+            }else if(emts[two]){
+                console.log(`${e[6]} is riding with ${emts[two].firstName} ${emts[two].lastName}. Confrim this student is not above the preceptors level. `);
+                return; 
+            }else{
+                console.log(`${e[6]} is not riding with with any preceptors DATE: ${e[4]} TRUCK: ${e[10]}`); 
+                return; 
+            }
+        }
         // emt branch
 
         if (emts[one]) {
@@ -106,8 +117,7 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
 
 function isSprintTruck(truckNumber: string): boolean {
 
-    //TODO: add this to DB so that this can scale to other areas
-
+   
     let sprintTrucks = [
         "221",
         "219",
