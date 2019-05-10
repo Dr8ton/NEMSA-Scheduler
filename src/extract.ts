@@ -112,7 +112,8 @@ function isSprintTruck(truckNumber: string): boolean {
         "221",
         "219",
         "226",
-        "227"
+        "227",
+        "300"
     ]
 
     return sprintTrucks.includes(truckNumber);
