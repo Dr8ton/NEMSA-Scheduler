@@ -2,6 +2,8 @@
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
+import Bottleneck from "bottleneck";
+import { AREAS } from "./AREAS";
 
 const googleCredentials = require('../secrets/key.json');
 //TODO: Document this function
@@ -33,38 +35,28 @@ export async function addEventToCalendar(event, calId: string) {
 }
 
 //TODO: Document this function
-
 export async function clearCalendar(calId: string) {
-
     let auth = authenticate();
-    try {
-        let e = await calendar.events.list({
+
+    const limiter = new Bottleneck({
+        maxConcurrent: 10,
+        minTime: 300
+    });
+
+    let listOfEvents = await calendar.events.list({
+        auth: auth,
+        calendarId: calId,
+        maxResults: 9999
+    })
+
+    for (const i of listOfEvents.data.items) {
+        var params = {
             auth: auth,
             calendarId: calId,
-            maxResults: 9999
-        })
+            eventId: i.id,
+        };
 
-        for await (const i of e.data.items) {
-            try {
-                console.log(`trying to delete: ${i.summary} on ${i.start.dateTime}`);
-
-
-                var params = {
-                    auth: auth,
-                    calendarId: calId,
-                    eventId: i.id,
-                };
-                await calendar.events.delete(params);
-
-            } catch (error) {
-                console.log(`unable to delete: ${i.summary} on ${i.start.dateTime}: ${error}`);
-
-            }
-
-        }
-
-    } catch (error) {
-        console.log(`unable to clear calendar: ${error}`);
+        limiter.schedule(p => calendar.events.delete(p), params);
     }
 
 }
@@ -103,3 +95,8 @@ function authenticate() {
     return oAuth2Client;
 }
 
+try {
+    clearCalendarTest("5u7af47v5pf8v165ae54r53h98@group.calendar.google.com");
+} catch (error) {
+    console.log(`broken: ${error}`);
+}
