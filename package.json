@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Dr8ton/NEMSA-Scheduler#readme",
   "dependencies": {
+    "bottleneck": "^2.18.0",
     "dotenv": "^6.2.0",
     "downloads-folder": "^1.0.1",
     "firebase": "^5.8.5",
