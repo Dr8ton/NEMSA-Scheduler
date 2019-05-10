@@ -3,24 +3,22 @@ const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
 import Bottleneck from "bottleneck";
-import { AREAS } from "./AREAS";
 
 const googleCredentials = require('../secrets/key.json');
+
 //TODO: Document this function
-export async function addEventToCalendar(event, calId: string) {
+export function addEventToCalendar(event, calId: string) {
     let auth = authenticate();
     try {
         console.log(`Adding event: ${event.eventName} @ ${event.startTime}`)
-        await calendar.events.insert({
+         return calendar.events.insert({
             auth: auth,
             calendarId: calId,
             resource: {
-                // TODO : Change name to Truck @ LOC w/ Preceptor Name
                 'summary': event.eventName,
                 'description': event.description,
                 'start': {
                     'dateTime': event.startTime,
-
                 },
                 'end': {
                     'dateTime': event.endTime,
@@ -62,7 +60,6 @@ export async function clearCalendar(calId: string) {
 }
 
 //TODO: Document this function
-
 export async function countEventsOnCalendar(calId: string): Promise<number> {
 
     let auth = authenticate();
@@ -80,8 +77,8 @@ export async function countEventsOnCalendar(calId: string): Promise<number> {
 
 
 }
-//TODO: Document this function
 
+//TODO: Document this function
 function authenticate() {
     const oAuth2Client = new OAuth2(
         googleCredentials.web.client_id,
@@ -95,8 +92,3 @@ function authenticate() {
     return oAuth2Client;
 }
 
-try {
-    clearCalendarTest("5u7af47v5pf8v165ae54r53h98@group.calendar.google.com");
-} catch (error) {
-    console.log(`broken: ${error}`);
-}
