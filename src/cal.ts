@@ -1,17 +1,67 @@
+import Bottleneck from "bottleneck";
 
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const calendar = google.calendar('v3');
-import Bottleneck from "bottleneck";
 
 const googleCredentials = require('../secrets/key.json');
 
+const limiter1 = new Bottleneck({
+    maxConcurrent: 10,
+    minTime: 500
+});
+
+
+export async function clearCalendars(calendarIds) {
+    let auth = authenticate();
+    let calendars:string[] = Object.values(calendarIds); 
+    for (const calendarId of calendars) {
+        let listOfEvents:object[] = await getListOfEvents(calendarId); 
+        for (const event of listOfEvents) {
+            var params = {
+                auth: auth,
+                calendarId: calendarId,
+                eventId: event.id,
+            };
+            removeShiftFromCalendar(params); 
+        }
+    }
+}
+
+export async function getListOfEvents(calendarId: string): Promise<[]> {
+    let auth = authenticate();
+
+    let listOfEvents = await calendar.events.list({
+        auth: auth,
+        calendarId: calendarId,
+        maxResults: 9999
+    })
+
+    return listOfEvents.data.items;
+}
+
+function removeShiftFromCalendar(data){
+    try {
+      //  console.log(`Bottlneck delete shift`)
+        limiter1.schedule(p => calendar.events.delete(p), data);
+
+    } catch (error) {
+       // console.log(`Unable to delete event: ${error}`)
+    }
+}
+
+
+export function addShiftToCalendar(data, calendarId: string) {
+ //   console.log(`adding shift to Bootleneck: ${data}`)
+    limiter1.schedule(() => { return addEventToCalendar(data, calendarId) }, data, calendarId);
+}
+
 //TODO: Document this function
-export function addEventToCalendar(event, calId: string) {
+function addEventToCalendar(event, calId: string) {
     let auth = authenticate();
     try {
-        console.log(`Adding event: ${event.eventName} @ ${event.startTime}`)
-         return calendar.events.insert({
+      //  console.log(`Adding event: ${event.eventName} @ ${event.startTime}`)
+        return calendar.events.insert({
             auth: auth,
             calendarId: calId,
             resource: {
@@ -32,32 +82,6 @@ export function addEventToCalendar(event, calId: string) {
     }
 }
 
-//TODO: Document this function
-export async function clearCalendar(calId: string) {
-    let auth = authenticate();
-
-    const limiter = new Bottleneck({
-        maxConcurrent: 10,
-        minTime: 300
-    });
-
-    let listOfEvents = await calendar.events.list({
-        auth: auth,
-        calendarId: calId,
-        maxResults: 9999
-    })
-
-    for (const i of listOfEvents.data.items) {
-        var params = {
-            auth: auth,
-            calendarId: calId,
-            eventId: i.id,
-        };
-
-        limiter.schedule(p => calendar.events.delete(p), params);
-    }
-
-}
 
 //TODO: Document this function
 export async function countEventsOnCalendar(calId: string): Promise<number> {
@@ -69,7 +93,7 @@ export async function countEventsOnCalendar(calId: string): Promise<number> {
             calendarId: calId,
             maxResults: 9999
         })
-        console.log(e.data.items.length)
+   //     console.log(e.data.items.length)
         return e.data.items.length;
     } catch (error) {
         console.log(`unable to count number of events created on calendar: ${error}`);

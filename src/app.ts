@@ -4,20 +4,19 @@ import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import _ from 'underscore';
 import { extractShifts } from "./extract";
-import { addEventToCalendar, clearCalendar } from "./cal";
+import { clearCalendars, addShiftToCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 import { AREAS } from "./AREAS";
-import Bottleneck from "bottleneck";
-
 
 require('dotenv').config();
 const downloadFolderPath = downloadsFolder();
+
 
 async function main() {
     for (const area of AREAS) {
 
         //erease previous data from calendar. 
-        clearBothCalendarsForThisArea(area);
+        clearCalendars(area.calendarIds);
 
         // TODO: use cache to save calls to DB
         // TODO: use Promise.all
@@ -33,7 +32,7 @@ async function main() {
         let shiftReport = await downloadReport(area);
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
 
-
+        //TODO: combine into one function just like clearCalendars();
         buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic);
 
         buildCalendar(SHIFTS.emt, area.calendarIds.emt);
@@ -45,11 +44,6 @@ async function main() {
 
 async function buildCalendar(shifts, calendarId: string) {
 
-    const limiter = new Bottleneck({
-        maxConcurrent: 1,
-        minTime: 1000
-    });
-
     for (let shift of shifts) {
         let eventData = {
             "eventName": `${shift.crew} | ${shift.location} | ${shift.truck} `,
@@ -57,13 +51,9 @@ async function buildCalendar(shifts, calendarId: string) {
             "startTime": `${shift.startDTG}`,
             "endTime": `${shift.endDTG}`
         }
-
-        limiter.schedule(() =>{return addEventToCalendar(eventData, calendarId)}, eventData, calendarId);
-
-
+        addShiftToCalendar(eventData, calendarId);
     }
 }
-
 
 // Return only base file name without dir
 function getMostRecentFileName(dir) {
@@ -81,11 +71,6 @@ function getMostRecentFileName(dir) {
 
 export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function clearBothCalendarsForThisArea(area) {
-    await clearCalendar(area.calendarIds.emt);
-    await clearCalendar(area.calendarIds.paramedic);
 }
 
 async function downloadReport(area) {
