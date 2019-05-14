@@ -2,6 +2,7 @@
 require('dotenv').config();
 import puppeteer, { Browser } from 'puppeteer';
 import { delay } from './app';
+const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 /**
@@ -13,17 +14,23 @@ const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCr
  * 
  * @returns {Browser} browser - returns the browswer object so that it can be cloased after the download has completed. 
  */
-export async function getShiftExcelFile(region:number){
+export async function getShiftExcelFile(region: number) {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);
 
+    //using key.json
+    await page.type('#tbCompany', crew_scheduler.crew_scheduler.company);
+    await page.type('#tbUserName', crew_scheduler.crew_scheduler.login);
+    await page.type('#tbPassword', crew_scheduler.crew_scheduler.password);
+
+    //using env variables
     await page.type('#tbCompany', process.env.CREWSCHEDULER_COMPANY);
     await page.type('#tbUserName', process.env.CREWSCHEDULER_LOGIN);
     await page.type('#tbPassword', process.env.CREWSCHEDULER_PASSWORD);
 
-    await page.click('#btnLogin');  
+    await page.click('#btnLogin');
 
     await page.waitForSelector('#ddlReport');
     await page.select('#ddlReport', '313');
@@ -35,7 +42,7 @@ export async function getShiftExcelFile(region:number){
     await page.click('#rbDates');
 
     let today = new Date();
-    let nextYear = new Date(today.getFullYear()+1, today.getMonth(), today.getDay());
+    let nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDay());
 
     await page.waitForSelector('#dpStart_dateInput');
     delay(3000);// FIXME : Can I delete this?
@@ -47,7 +54,7 @@ export async function getShiftExcelFile(region:number){
     await page.waitForSelector('#btnExport');
     await page.click('#btnExport');
 
-    return browser;  
-    };
+    return browser;
+};
 
 
