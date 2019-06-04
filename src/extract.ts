@@ -10,7 +10,7 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
 
     let dl = path.join(downloadsFolder(), fileName);
 
-    //testing
+    //testing which skips download of file from site. 
     // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
     // let dataFromReport = testReport[0].data
 

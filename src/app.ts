@@ -15,20 +15,11 @@ const downloadFolderPath = downloadsFolder();
 async function main() {
     for (const area of AREAS) {
 
-        //erease previous data from calendar. 
         clearCalendars(area.calendarIds);
 
         // TODO: use cache to save calls to DB
-        // TODO: use Promise.all
-        // https://hackernoon.com/async-await-essentials-for-production-loops-control-flows-limits-23eb40f171bd
+        const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
 
-        const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]); 
-        // const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
-        // const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
-
-        //testing 
-
-        // Production
         let shiftReport = await downloadReport(area);
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
 
@@ -38,7 +29,13 @@ async function main() {
         buildCalendar(SHIFTS.emt, area.calendarIds.emt);
 
 
-        // TODO: Delete file when done. 
+        try {
+            var pathToShiftReportFile = path.join(downloadFolderPath, shiftReport);
+            fs.unlinkSync(pathToShiftReportFile);
+        } catch (error) {
+            console.log(`unable to delete downloaded file for reason: ${error}`);
+        }
+
     }
 }
 
@@ -72,7 +69,7 @@ function getMostRecentFileName(dir) {
 export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
+//Returns file
 async function downloadReport(area) {
     let numberOfFilesBeforeDownload = fs.readdirSync(downloadFolderPath).length;
     let browser = await downloadShifts.getShiftExcelFile(area.crewscheduler.region);

@@ -20,16 +20,9 @@ export async function getShiftExcelFile(region: number) {
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);
 
-    //using key.json
     await page.type('#tbCompany', crew_scheduler.crew_scheduler.company);
     await page.type('#tbUserName', crew_scheduler.crew_scheduler.username);
     await page.type('#tbPassword', crew_scheduler.crew_scheduler.password);
-
-    //using env variables
-    // await page.type('#tbCompany', process.env.CREWSCHEDULER_COMPANY);
-    // await page.type('#tbUserName', process.env.CREWSCHEDULER_LOGIN);
-    // await page.type('#tbPassword', process.env.CREWSCHEDULER_PASSWORD);
-
     await page.click('#btnLogin');
 
     await page.waitForSelector('#ddlReport');
