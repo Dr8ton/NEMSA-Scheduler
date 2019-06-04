@@ -1,5 +1,4 @@
 import Bottleneck from "bottleneck";
-import { AREAS } from "./AREAS";
 
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
@@ -18,7 +17,6 @@ export async function clearCalendars(calendarIds) {
     let calendars: string[] = Object.values(calendarIds);
     for (const calendarId of calendars) {
         let listOfEvents: object[] = await getListOfEvents(calendarId);
-        console.log(listOfEvents)
         for (const event of listOfEvents) {
             var params = {
                 auth: auth,
@@ -38,7 +36,6 @@ export async function getListOfEvents(calendarId: string): Promise<[]> {
         maxResults: 9999,
         singleEvents: true
     })
-    console.log(listOfEvents);
     return listOfEvents.data.items;
 }
 
@@ -118,4 +115,3 @@ function authenticate() {
     return oAuth2Client;
 }
 
-clearCalendars(AREAS[0].calendarIds);
