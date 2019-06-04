@@ -23,9 +23,7 @@ async function main() {
         let shiftReport = await downloadReport(area);
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
 
-        //TODO: combine into one function just like clearCalendars();
         buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic);
-
         buildCalendar(SHIFTS.emt, area.calendarIds.emt);
 
 
