@@ -22,9 +22,9 @@ async function main() {
         // TODO: use Promise.all
         // https://hackernoon.com/async-await-essentials-for-production-loops-control-flows-limits-23eb40f171bd
 
-
-        const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
-        const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
+        const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]); 
+        // const emtPreceptors = await getAllActiveEMTPreceptors(area.name);
+        // const paramedicPreceptors = await getAllActiveParamedicPreceptors(area.name);
 
         //testing 
 
