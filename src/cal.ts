@@ -41,11 +41,9 @@ export async function getListOfEvents(calendarId: string): Promise<[]> {
 
 function removeShiftFromCalendar(data) {
     try {
-        console.log(`Bottlneck delete shift`)
         limiter1.schedule(p => calendar.events.delete(p), data);
-
     } catch (error) {
-        console.log(`Unable to delete event: ${error}`)
+        console.log(`Unable to schedule even with Bottlneck: ${error}`)
     }
 }
 
@@ -92,7 +90,6 @@ export async function countEventsOnCalendar(calId: string): Promise<number> {
             calendarId: calId,
             maxResults: 9999
         })
-        //     console.log(e.data.items.length)
         return e.data.items.length;
     } catch (error) {
         console.log(`unable to count number of events created on calendar: ${error}`);
