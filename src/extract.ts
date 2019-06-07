@@ -102,6 +102,7 @@ export function extractShifts(fileName: string, emts: object, medics: object) {
                 });
         }
     });
+    console.log(`Extraction complete`)
     return shifts;
 }
 
