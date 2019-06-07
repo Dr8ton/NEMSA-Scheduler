@@ -6,8 +6,8 @@ import downloadsFolder = require('downloads-folder');
 
 //TODO: Document this function
 
-export function extractShifts(fileName: string, emts:object, medics: object) {
-
+export function extractShifts(fileName: string, emts: object, medics: object) {
+    console.log(`Extracting shifts`)
     let dl = path.join(downloadsFolder(), fileName);
 
     //testing which skips download of file from site. 
@@ -41,17 +41,17 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
         let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
 
         if (alreadyHasStudent(e[6])) {
-            if(medics[one] || medics[two]){
+            if (medics[one] || medics[two]) {
                 return
-            }else if(emts[one]){
+            } else if (emts[one]) {
                 console.log(`${e[6]} is riding with ${emts[one].firstName} ${emts[one].lastName}. Confirm this student is not above the EMT preceptors level. DATE: ${e[4]} TRUCK: ${e[10]}`);
-                return; 
-            }else if(emts[two]){
+                return;
+            } else if (emts[two]) {
                 console.log(`${e[6]} is riding with ${emts[two].firstName} ${emts[two].lastName}. Confirm this student is not above the EMT preceptors level. DATE: ${e[4]} TRUCK: ${e[10]}`);
-                return; 
-            }else{
-                console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`); 
-                return; 
+                return;
+            } else {
+                console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`);
+                return;
             }
         }
         // emt branch
@@ -117,7 +117,7 @@ export function extractShifts(fileName: string, emts:object, medics: object) {
 
 function isSprintTruck(truckNumber: string): boolean {
 
-   
+
     let sprintTrucks = [
         "221",
         "219",

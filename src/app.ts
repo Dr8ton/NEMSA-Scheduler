@@ -86,6 +86,7 @@ async function downloadReport(area) {
     }
 
     browser.close();
+    console.log(`Download complete: ${latestFile}`)
     return latestFile;
 }
 main();
