@@ -23,8 +23,8 @@ async function main() {
         let shiftReport = await downloadReport(area);
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
 
-        buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic);
-        buildCalendar(SHIFTS.emt, area.calendarIds.emt);
+        buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
+        buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
 
 
         try {
@@ -37,11 +37,16 @@ async function main() {
     }
 }
 
-async function buildCalendar(shifts, calendarId: string) {
+function getStationName(listOfStations:object, stationCode:string): string{
+    return listOfStations[stationCode]; 
+}
+async function buildCalendar(shifts, calendarId: string, stations: object) {
 
     for (let shift of shifts) {
+
+        let location = getStationName(stations, shift.location);
         let eventData = {
-            "eventName": `${shift.crew} | ${shift.location} | ${shift.truck} `,
+            "eventName": `${shift.crew} | ${location} | ${shift.truck} `,
             "description": `Shift ID: ${shift.id}`,
             "startTime": `${shift.startDTG}`,
             "endTime": `${shift.endDTG}`
