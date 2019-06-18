@@ -21,7 +21,7 @@ async function main() {
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
 
         let shiftReport = await downloadReport(area);
-        let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors);
+        let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
 
         buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
         buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);

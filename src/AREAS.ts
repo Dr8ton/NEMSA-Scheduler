@@ -13,7 +13,15 @@ export const AREAS = [{
     },
     crewscheduler: {
         region: 9
-    }
+    }, 
+    sprintTrucks: [
+        "221",
+        "218",
+        "219",
+        "226",
+        "227",
+        "300"
+    ]
 }
 
 ];

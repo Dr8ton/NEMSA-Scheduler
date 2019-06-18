@@ -6,7 +6,7 @@ import downloadsFolder = require('downloads-folder');
 
 //TODO: Document this function
 
-export function extractShifts(fileName: string, emts: object, medics: object) {
+export function extractShifts(fileName: string, emts: object, medics: object, sprintTrucks: string[]) {
     console.log(`Extracting shifts`)
     let dl = path.join(downloadsFolder(), fileName);
 
@@ -27,7 +27,7 @@ export function extractShifts(fileName: string, emts: object, medics: object) {
     dataFromReport.forEach((e) => {
 
         //TODO: sprint trucks from DB
-        if (isSprintTruck(e[10])) {
+        if (isSprintTruck(sprintTrucks, e[10])) {
             return;
         }
 
@@ -116,17 +116,7 @@ export function extractShifts(fileName: string, emts: object, medics: object) {
  * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
  */
 
-function isSprintTruck(truckNumber: string): boolean {
-
-
-    let sprintTrucks = [
-        "221",
-        "219",
-        "226",
-        "227",
-        "300"
-    ]
-
+function isSprintTruck(sprintTrucks: string[], truckNumber: string): boolean {
     return sprintTrucks.includes(truckNumber);
 }
 
