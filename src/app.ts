@@ -15,14 +15,19 @@ const downloadFolderPath = downloadsFolder();
 async function main() {
     for (const area of AREAS) {
 
-        clearCalendars(area.calendarIds);
+        let shiftReport: any;
 
         // TODO: use cache to save calls to DB
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
+        try {
+            shiftReport = await downloadReport(area);
+        } catch (error) {
+            throw new Error("unable to download shift report: " + error)
+            return;
+        }
 
-        let shiftReport = await downloadReport(area);
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
-
+        clearCalendars(area.calendarIds);
         buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
         buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
 
@@ -37,8 +42,8 @@ async function main() {
     }
 }
 
-function getStationName(listOfStations:object, stationCode:string): string{
-    return listOfStations[stationCode]; 
+function getStationName(listOfStations: object, stationCode: string): string {
+    return listOfStations[stationCode];
 }
 async function buildCalendar(shifts, calendarId: string, stations: object) {
 
