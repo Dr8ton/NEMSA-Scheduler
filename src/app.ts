@@ -23,7 +23,6 @@ async function main() {
             shiftReport = await downloadReport(area);
         } catch (error) {
             throw new Error("unable to download shift report: " + error)
-            return;
         }
 
         let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
