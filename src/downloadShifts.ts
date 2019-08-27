@@ -53,15 +53,13 @@ export async function getShiftExcelFile(region: number) {
       });
 
       const data = await page.evaluate( () => {
-        const table = document.querySelector('#DataGrid1 tbody')
-        const rows = document.querySelectorAll('tr');
+        const table = document.querySelectorAll('#DataGrid1 tbody tr');
 
-        const urls = Array.from(rows).map(v => v.innerHTML);
+        //pop the first one off it's not a real shift
 
-        return urls
+        // return urls
+        // return shifts; 
     });
-    console.log(data);
-    
     // var container = document.querySelector("#userlist");
     // var matches = container.querySelectorAll("li[data-active='1']");
 };
