@@ -38,13 +38,12 @@ export async function getShiftExcelFile(region: number) {
     let nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDay());
 
     await page.waitForSelector('#dpStart_dateInput');
-    delay(3000);// FIXME : Can I delete this?
     await page.type('#dpStart_dateInput', today.toLocaleDateString());
-    delay(3000);// FIXME : Can I delete this?
     await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
-    delay(3000);// FIXME : Can I delete this?
 
-    return browser;
+    await page.waitForSelector('[name=btnGo]');
+    await page.click('[name=btnGo]');
+    console.log("how did we get this far");
 };
 
-
+getShiftExcelFile(9);
