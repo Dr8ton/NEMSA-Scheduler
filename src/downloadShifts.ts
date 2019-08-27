@@ -44,9 +44,6 @@ export async function getShiftExcelFile(region: number) {
     await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
     delay(3000);// FIXME : Can I delete this?
 
-    await page.waitForSelector('#btnExport');
-    await page.click('#btnExport');
-
     return browser;
 };
 
