@@ -44,6 +44,26 @@ export async function getShiftExcelFile(region: number) {
     await page.waitForSelector('[name=btnGo]');
     await page.click('[name=btnGo]');
     console.log("how did we get this far");
+
+    const cat = await page.evaluate(() => {
+        const rows = Array.from(document.querySelectorAll('#DataGrid1 tbody tr'))
+        console.log(rows);
+
+        return rows;
+      });
+
+      const data = await page.evaluate( () => {
+        const table = document.querySelector('#DataGrid1 tbody')
+        const rows = document.querySelectorAll('tr');
+
+        const urls = Array.from(rows).map(v => v.innerHTML);
+
+        return urls
+    });
+    console.log(data);
+    
+    // var container = document.querySelector("#userlist");
+    // var matches = container.querySelectorAll("li[data-active='1']");
 };
 
 getShiftExcelFile(9);
