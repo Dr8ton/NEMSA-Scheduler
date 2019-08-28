@@ -42,32 +42,28 @@ export async function getShiftExcelFile(region: number) {
   await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
 
   await page.waitForSelector('[name=btnGo]');
-  const [response] = await Promise.all([
+  await Promise.all([
     page.click('[name=btnGo]'),
     page.waitForNavigation({
       timeout: 10000,
       waitUntil: "networkidle0"
+    }),    
+    page.waitForNavigation({
+      timeout: 10000,
+      waitUntil: "load"
+    }),
+    page.waitForNavigation({
+      timeout: 10000,
+      waitUntil: "domcontentloaded"
     })
   ]);
-  // await page.click('[name=btnGo]');
-  // await page.waitForNavigation({
-  //   //timeout: 10000, 
-  //   waitUntil: "networkidle0"
-  // })
-  // await page.waitForSelector('#DataGrid1 ', {
-  //   visible: true,
-  // });
+
   const selector = '#DataGrid1 > tbody > tr';
 
 
-  // let bodyHTML = await page.evaluate(() => document.body.innerHTML);
-  // console.log(bodyHTML)
+
   const html = await page.content();
-  console.log(html);
-  console.log("after eval")
-  //'#DataGrid1 tbody tr'
-  // var container = document.querySelector("#userlist");
-  // var matches = container.querySelectorAll("li[data-active='1']");
+
 
 }
 getShiftExcelFile(9);
