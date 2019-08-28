@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Dr8ton/NEMSA-Scheduler#readme",
   "dependencies": {
+    "@types/cheerio": "^0.22.13",
     "bottleneck": "^2.18.0",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^6.2.0",

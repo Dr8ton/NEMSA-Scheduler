@@ -50,7 +50,7 @@ export function delay(ms: number) {
 }
 //Returns file
 async function downloadReport(area) {
-    let browser = await downloadShifts.getShiftExcelFile(area.crewscheduler.region);
+    let browser = await downloadShifts.getHTMLFromCrewScheduler(area.crewscheduler.region);
 
 }
 main();

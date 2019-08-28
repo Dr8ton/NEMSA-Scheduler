@@ -1,22 +1,15 @@
 'use strict';
 require('dotenv').config();
+import fs from 'fs';
 import puppeteer, { Browser } from 'puppeteer';
 import { delay } from './app';
-import { cherio } from "cheerio";
+import * as cheerio from 'cheerio';
 
 const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
-/**
- * This will download the report from https://scheduling.acadian.com/CrewScheduler/MainMenu.aspx
- * General Reports > Report : Daily Schedule (RAW)
- * From todays date until one year from todays date. 
- * 
- * @param {number} region - the number of the HTML <select> option for the Region. Should be passed area.crewscheduler.region as an argument. 
- * 
- * @returns {Browser} browser - returns the browswer object so that it can be cloased after the download has completed. 
- */
-export async function getShiftExcelFile(region: number) {
+
+export async function getHTMLFromCrewScheduler(region: number): Promise<string> {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.setViewport({ width: 900, height: 926 });
@@ -49,7 +42,7 @@ export async function getShiftExcelFile(region: number) {
     page.waitForNavigation({
       timeout: 10000,
       waitUntil: "networkidle0"
-    }),    
+    }),
     page.waitForNavigation({
       timeout: 10000,
       waitUntil: "load"
@@ -62,10 +55,47 @@ export async function getShiftExcelFile(region: number) {
 
   const selector = '#DataGrid1 > tbody > tr';
 
+  const html = await page.$eval('#DataGrid1', (element) => {
+    return element.innerHTML
+  })
+  const htmlAsStirng = `'${html}'`
+  // const html = await page.content();
+
+  return htmlAsStirng;
+}
 
 
-  const html = await page.content();
 
+export function scrapeShifts(text: string) {
+  const $ = cheerio.load(text, {
+    normalizeWhitespace:true,
+    xmlMode: true
+  });
+const shifts = [];
+
+  let trs = $('tr').each(function(i, elem) {
+    shifts[i] = $(this).children().text();
+  });
+
+console.log(shifts)
 
 }
-getShiftExcelFile(9);
+async function main() {
+   let scrape = await getHTMLFromCrewScheduler(9);
+  scrapeShifts(scrape);
+}
+
+function writeNewFile(text: string) {
+  fs.writeFile("./dist/test", text, function (err) {
+    if (err) {
+      return console.log(err);
+    }
+
+    console.log("The file was saved!");
+  });
+}
+
+main();
+
+//Todo: add enums from readme file under source. then connect that with .get() from cheerio
+https://www.raymondcamden.com/2016/11/30/scraping-a-web-page-in-node-with-cheerio
