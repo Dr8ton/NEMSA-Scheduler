@@ -15,53 +15,59 @@ const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCr
  * @returns {Browser} browser - returns the browswer object so that it can be cloased after the download has completed. 
  */
 export async function getShiftExcelFile(region: number) {
-    const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.setViewport({ width: 900, height: 926 });
-    await page.goto(generalReportURL);
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.setViewport({ width: 900, height: 926 });
+  await page.goto(generalReportURL);
 
-    await page.type('#tbCompany', crew_scheduler.crew_scheduler.company);
-    await page.type('#tbUserName', crew_scheduler.crew_scheduler.username);
-    await page.type('#tbPassword', crew_scheduler.crew_scheduler.password);
-    await page.click('#btnLogin');
+  await page.type('#tbCompany', crew_scheduler.crew_scheduler.company);
+  await page.type('#tbUserName', crew_scheduler.crew_scheduler.username);
+  await page.type('#tbPassword', crew_scheduler.crew_scheduler.password);
+  await page.click('#btnLogin');
 
-    await page.waitForSelector('#ddlReport');
-    await page.select('#ddlReport', '313');
+  await page.waitForSelector('#ddlReport');
+  await page.select('#ddlReport', '313');
 
-    await page.waitForSelector('#ddlRegion');
-    await page.select('#ddlRegion', region.toString());
+  await page.waitForSelector('#ddlRegion');
+  await page.select('#ddlRegion', region.toString());
 
-    await page.waitForSelector('#rbDates');
-    await page.click('#rbDates');
+  await page.waitForSelector('#rbDates');
+  await page.click('#rbDates');
 
-    let today = new Date();
-    let nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDay());
+  let today = new Date();
+  let nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDay());
 
-    await page.waitForSelector('#dpStart_dateInput');
-    await page.type('#dpStart_dateInput', today.toLocaleDateString());
-    await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
+  await page.waitForSelector('#dpStart_dateInput');
+  await page.type('#dpStart_dateInput', today.toLocaleDateString());
+  await page.type('#dpEnd_dateInput', nextYear.toLocaleDateString());
 
-    await page.waitForSelector('[name=btnGo]');
-    await page.click('[name=btnGo]');
-    console.log("how did we get this far");
+  await page.waitForSelector('[name=btnGo]');
+  const [response] = await Promise.all([
+    page.click('[name=btnGo]'),
+    page.waitForNavigation({
+      timeout: 10000,
+      waitUntil: "networkidle0"
+    })
+  ]);
+  // await page.click('[name=btnGo]');
+  // await page.waitForNavigation({
+  //   //timeout: 10000, 
+  //   waitUntil: "networkidle0"
+  // })
+  // await page.waitForSelector('#DataGrid1 ', {
+  //   visible: true,
+  // });
+  const selector = '#DataGrid1 > tbody > tr';
 
-    const cat = await page.evaluate(() => {
-        const rows = Array.from(document.querySelectorAll('#DataGrid1 tbody tr'))
-        console.log(rows);
 
-        return rows;
-      });
+  // let bodyHTML = await page.evaluate(() => document.body.innerHTML);
+  // console.log(bodyHTML)
+  const html = await page.content();
+  console.log(html);
+  console.log("after eval")
+  //'#DataGrid1 tbody tr'
+  // var container = document.querySelector("#userlist");
+  // var matches = container.querySelectorAll("li[data-active='1']");
 
-      const data = await page.evaluate( () => {
-        const table = document.querySelectorAll('#DataGrid1 tbody tr');
-
-        //pop the first one off it's not a real shift
-
-        // return urls
-        // return shifts; 
-    });
-    // var container = document.querySelector("#userlist");
-    // var matches = container.querySelectorAll("li[data-active='1']");
-};
-
+}
 getShiftExcelFile(9);
