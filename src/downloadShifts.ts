@@ -2,6 +2,8 @@
 require('dotenv').config();
 import puppeteer, { Browser } from 'puppeteer';
 import { delay } from './app';
+import { cherio } from "cheerio";
+
 const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
