@@ -31,12 +31,16 @@
     "underscore": "^1.9.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
     "@types/dotenv": "^6.1.0",
     "@types/firebase-client": "^0.1.32",
     "@types/jquery": "^3.3.29",
     "@types/node": "^11.11.0",
     "@types/node-xlsx": "^0.12.1",
     "@types/puppeteer": "^1.12.3",
+    "babel-jest": "^24.9.0",
     "jest": "^24.9.0",
     "typescript": "^3.3.3333"
   }
