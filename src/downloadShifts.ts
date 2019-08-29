@@ -5,6 +5,22 @@ import puppeteer, { Browser } from 'puppeteer';
 import { delay } from './app';
 import * as cheerio from 'cheerio';
 
+enum Shift {
+  Id = 0,
+  ShiftName = 1,
+  LocationCode = 2,
+  ShiftDate = 3,
+  StartTime = 4,
+  EndTime = 5,
+  Notes = 6,
+  TruckNumber = 10,
+  CrewOne = 15,
+  ReplacedOne = 16,
+  CrewTwo = 20,
+  ReplacedTwo = 21
+}
+
+
 const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
@@ -68,20 +84,20 @@ export async function getHTMLFromCrewScheduler(region: number): Promise<string> 
 
 export function scrapeShifts(text: string) {
   const $ = cheerio.load(text, {
-    normalizeWhitespace:true,
+    normalizeWhitespace: true,
     xmlMode: true
   });
-const shifts = [];
+  const shifts = [];
 
-  let trs = $('tr').each(function(i, elem) {
+  let trs = $('tr').each(function (i, elem) {
     shifts[i] = $(this).children().text();
   });
 
-console.log(shifts)
+  console.log(shifts)
 
 }
 async function main() {
-   let scrape = await getHTMLFromCrewScheduler(9);
+  let scrape = await getHTMLFromCrewScheduler(9);
   scrapeShifts(scrape);
 }
 
