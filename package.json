@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "@types/node": "^11.11.0",
     "@types/node-xlsx": "^0.12.1",
     "@types/puppeteer": "^1.12.3",
+    "jest": "^24.9.0",
     "typescript": "^3.3.3333"
   }
 }
