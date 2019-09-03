@@ -3,33 +3,32 @@ import fs from 'fs';
 import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import _ from 'underscore';
-import { extractShifts } from "./extract";
+import { sortShifts } from "./extract";
 import { clearCalendars, addShiftToCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 import { AREAS } from "./AREAS";
+import { scrapeShiftsFromCrewScheduler } from "./downloadShifts";
 
 require('dotenv').config();
 
 async function main() {
     for (const area of AREAS) {
 
-        let shiftReport: any;
 
         // TODO: use cache to save calls to DB
-       // const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
+        const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
 
-
-       // let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
-        clearCalendars(area.calendarIds);
-     //   buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
-     //   buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
+        const scrapedShifts = await scrapeShiftsFromCrewScheduler(area.crewscheduler.region); 
+        let SHIFTS = sortShifts(scrapedShifts, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
+        // clearCalendars(area.calendarIds);
+        // buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
+        // buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
 
     }
 }
 
-function getStationName(listOfStations: object, stationCode: string): string {
-    return listOfStations[stationCode];
-}
+
+
 async function buildCalendar(shifts, calendarId: string, stations: object) {
 
     for (let shift of shifts) {
@@ -45,12 +44,12 @@ async function buildCalendar(shifts, calendarId: string, stations: object) {
     }
 }
 
+function getStationName(listOfStations: object, stationCode: string): string {
+    return listOfStations[stationCode];
+}
+
 export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-//Returns file
-async function downloadReport(area) {
-    let browser = await downloadShifts.getHTMLFromCrewScheduler(area.crewscheduler.region);
 
-}
 main();

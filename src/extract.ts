@@ -6,25 +6,13 @@ import downloadsFolder = require('downloads-folder');
 
 //TODO: Document this function
 
-export function extractShifts(fileName: string, emts: object, medics: object, sprintTrucks: string[]) {
-    console.log(`Extracting shifts`)
-    let dl = path.join(downloadsFolder(), fileName);
-
-    //testing which skips download of file from site. 
-    // const testReport = xlsx.parse("report.xlsx", { cellDates: true });
-    // let dataFromReport = testReport[0].data
-
-    // //working setup
-    const workSheetsFromFile = xlsx.parse(dl, { cellDates: true });
-    let dataFromReport = workSheetsFromFile[0].data
-
-
-    let shifts = {
+export function sortShifts(scraptedShifts: string[][], emts: object, medics: object, sprintTrucks: string[]) {
+    const shifts = {
         emt: [],
         paramedic: []
     }
 
-    dataFromReport.forEach((e) => {
+    scraptedShifts.forEach((e) => {
 
         //TODO: sprint trucks from DB
         if (isSprintTruck(sprintTrucks, e[10])) {
@@ -37,12 +25,17 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
             return;
         }
 
-        let one: string = e[16] === undefined ? formatEmployeeId(e[15]) : formatEmployeeId(e[16]);
-        let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
+        let one: string = e[16] === '&nbsp;' ? formatEmployeeId(e[15]) : formatEmployeeId(e[16]);
+        let two: string = e[21] === '&nbsp;' ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
+
+        if (e[6].includes("STUDENT/RIDER:")) {
+            console.log(e[6]);
+        }
 
         if (alreadyHasStudent(e[6])) {
             if (medics[one] || medics[two]) {
                 return
+
             } else if (emts[one]) {
                 console.log(`${e[6]} is riding with ${emts[one].firstName} ${emts[one].lastName}. Confirm this student is not above the EMT preceptors level. DATE: ${e[4]} TRUCK: ${e[10]}`);
                 return;
@@ -51,6 +44,7 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
                 return;
             } else {
                 console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`);
+                //todo stuck here. 
                 return;
             }
         }
@@ -102,25 +96,13 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
                 });
         }
     });
-    console.log(`Extraction complete`)
     return shifts;
 }
-
-/**
- * Summary. Checks to see if the truck on shift is a sprint truck. 
- * 
- * Description. Sprint trucks are not transporting units and therefore are typically not allow to carry students. 
- * 
- * @param {string} num: truck unit number. 
- * 
- * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
- */
 
 function isSprintTruck(sprintTrucks: string[], truckNumber: string): boolean {
     return sprintTrucks.includes(truckNumber);
 }
 
-//TODO: Document this function
 function alreadyHasStudent(notes: string): boolean {
     if (notes === undefined) {
         return false;
@@ -128,7 +110,6 @@ function alreadyHasStudent(notes: string): boolean {
         return notes.includes("STUDENT/RIDER:")
     }
 }
-//TODO: Document this function
 
 function formatEmployeeId(id: string): string {
     if (id === undefined) {
@@ -136,11 +117,8 @@ function formatEmployeeId(id: string): string {
     }
     return id.slice(0, 6);
 }
-//TODO: Document this function
 
 function formatDTG(d: string) {
-    var m = moment(d);
-    var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
-    return roundUp.toISOString();
+    return moment(d, "L LTS").toISOString();
 }
 
