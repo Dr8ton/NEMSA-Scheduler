@@ -38,7 +38,7 @@ const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCr
 
 
 async function getHTMLFromCrewScheduler(region: number): Promise<string> {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);

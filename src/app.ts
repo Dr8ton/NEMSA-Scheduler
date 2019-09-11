@@ -3,11 +3,13 @@ import fs from 'fs';
 import downloadsFolder from 'downloads-folder';
 import path from 'path';
 import _ from 'underscore';
-import { sortShifts } from "./extract";
+import { findUseableShifts } from "./extract";
 import { clearCalendars, addShiftToCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 import { AREAS } from "./AREAS";
 import { scrapeShiftsFromCrewScheduler } from "./downloadShifts";
+import { error } from "util";
+import { Shift } from "./Shift";
 
 require('dotenv').config();
 
@@ -18,33 +20,47 @@ async function main() {
         // TODO: use cache to save calls to DB
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
 
-        const scrapedShifts = await scrapeShiftsFromCrewScheduler(area.crewscheduler.region); 
-        let SHIFTS = sortShifts(scrapedShifts, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
+        const scrapedShifts = await scrapeShiftsFromCrewScheduler(area.crewscheduler.region);
+        let allPossibleShifts = findUseableShifts(scrapedShifts, area.sprintTrucks);
+        let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
+        let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
+        //TODO: start here
         // clearCalendars(area.calendarIds);
-        // buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
-        // buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
-
+        //buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
+        // buildCalendar(emtShifts, area.calendarIds.emt, area.stations);
+console.log("Break");
     }
 }
 
 
 
-async function buildCalendar(shifts, calendarId: string, stations: object) {
+export async function buildCalendar(shifts: Shift[], calendarId: string, stations: object, preceptors: any) {
 
     for (let shift of shifts) {
 
+        let preceptor;
+
+        if (preceptor[shift.crewOne]) {
+            preceptor = preceptor[shift.crewOne];
+        } else if (preceptor[shift.crewTwo]) {
+            preceptor = preceptor[shift.crewTwo];
+        } else {
+            throw new Error("unable to find preceptor after filtered for preceptors: " + error);
+        }
+
         let location = getStationName(stations, shift.location);
         let eventData = {
-            "eventName": `${shift.crew} | ${location} | ${shift.truck} `,
+            //TODO: need to work on event names. 
+            "eventName": `${preceptor.firstName} ${preceptor.lastName} | ${location} | ${shift.truck} `,
             "description": `Shift ID: ${shift.id}`,
             "startTime": `${shift.startDTG}`,
             "endTime": `${shift.endDTG}`
         }
-        addShiftToCalendar(eventData, calendarId);
+        //addShiftToCalendar(eventData, calendarId);
     }
 }
 
-function getStationName(listOfStations: object, stationCode: string): string {
+export function getStationName(listOfStations: object, stationCode: string): string {
     return listOfStations[stationCode];
 }
 
@@ -52,4 +68,11 @@ export function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+export function isPreceptorOnShift(shift: Shift) {
+    return this.includes(shift.crewOne || shift.crewTwo);
+}
+
+function getPreceptorName(id: string, preceptors: any) {
+
+}
 main();
