@@ -1,4 +1,4 @@
-const rows = [['5257645',
+export const rows = [['5257645',
     '96: Ngt O (12hr std crew)',
     'AM',
     '9/20/2019 12:00:00 AM',

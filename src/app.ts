@@ -41,9 +41,9 @@ export async function buildCalendar(shifts: Shift[], calendarId: string, station
         let preceptor;
 
         if (preceptor[shift.crewOne]) {
-            preceptor = preceptor[shift.crewOne];
+            preceptor = preceptors[shift.crewOne];
         } else if (preceptor[shift.crewTwo]) {
-            preceptor = preceptor[shift.crewTwo];
+            preceptor = preceptors[shift.crewTwo];
         } else {
             throw new Error("unable to find preceptor after filtered for preceptors: " + error);
         }
