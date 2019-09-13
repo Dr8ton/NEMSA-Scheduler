@@ -13,12 +13,12 @@ export function findUseableShifts(scraptedShifts: string[][], sprintTrucks: stri
     scraptedShifts.forEach((e) => {
 
         //TODO: sprint trucks from DB
-        if (isSprintTruck(sprintTrucks, e[10])) {return}
+        if (isSprintTruck(sprintTrucks, e[10])) { return }
         if (e[1] === 'OS') { return }
         if (alreadyHasStudent(e[6])) { return }
 
-        let one: string = getActualCrewMember(e[15], e[16]);
-        let two: string = getActualCrewMember(e[20], e[21]);
+        let one: string = formatEmployeeId(getActualCrewMember(e[15], e[16]));
+        let two: string = formatEmployeeId(getActualCrewMember(e[20], e[21]));
         let start: string = formatDTG(e[4]);
         let end: string = formatDTG(e[5]);
 
@@ -87,11 +87,11 @@ export function alreadyHasStudent(notes: string): boolean {
     if (notes === undefined) {
         return false;
     } else {
-        return notes.includes("STUDENT/RIDER:")
+         return notes.includes("STUDENT/RIDER:")
     }
 }
 
-function formatEmployeeId(id: string): string {
+export function formatEmployeeId(id: string): string {
     if (id === undefined) {
         return "";
     }
@@ -102,10 +102,11 @@ function formatDTG(d: string) {
     return moment(d, "L LTS").toISOString();
 }
 
-function getActualCrewMember(original: string, replacement: string) {
-    if (replacement === '&nbsp;') {
-        return formatEmployeeId(original);
+export function getActualCrewMember(original: string, replacement: string) {
+    if (replacement === '' || replacement === '&nbsp;') {
+        return original;
     } else {
-        return formatEmployeeId(replacement)
+        return replacement
     }
 }
+

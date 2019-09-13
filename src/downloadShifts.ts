@@ -103,7 +103,7 @@ function writeNewFile(text) {
 async function main(){
     let data = await scrapeShiftsFromCrewScheduler(9); 
     data.forEach(element => {
-        console.log(element[6]); 
+        console.log(element); 
     });
 }
 main ();
