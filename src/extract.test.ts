@@ -71,3 +71,31 @@ describe('formatEmployeeId() tests', () => {
         expect(result).toEqual('');
     });
 });
+
+describe('isSpringTruck() tests', () => {
+
+
+    test('it should return TRUE if the truckNumber is in the area', () => {
+        let truck ='221';
+        expect(extract.isSprintTruck(truck)).toBeTruthy(); 
+    });
+
+    test('It should return false if the truckNumber is not in the SPRINT_TRUCK array', () => {
+        let truck ='000';
+        expect(extract.isSprintTruck(truck)).toBeFalsy(); 
+
+    });
+
+    test('It should return FALSE if the truckNmber is undefined', () => {
+        let truck =undefined;
+        expect(extract.isSprintTruck(truck)).toBeFalsy(); 
+    });
+
+    test('It should return FALSE if the truckNmber is an empty string', () => {
+        let truck ='';
+        expect(extract.isSprintTruck(truck)).toBeFalsy(); 
+    });
+
+ 
+});
+

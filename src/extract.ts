@@ -1,8 +1,7 @@
 var xlsx = require('node-xlsx').default;
 import moment from 'moment';
 import { Shift } from "./Shift";
-
-
+import { SPRINT_TRUCKS } from "./AREAS";
 export function findUseableShifts(scraptedShifts: string[][], sprintTrucks: string[]) {
     const shifts: Shift[] = [];
     // const shifts = {
@@ -13,7 +12,7 @@ export function findUseableShifts(scraptedShifts: string[][], sprintTrucks: stri
     scraptedShifts.forEach((e) => {
 
         //TODO: sprint trucks from DB
-        if (isSprintTruck(sprintTrucks, e[10])) { return }
+        if (isSprintTruck(e[10])) { return }
         if (e[1] === 'OS') { return }
         if (alreadyHasStudent(e[6])) { return }
 
@@ -79,8 +78,8 @@ export function findUseableShifts(scraptedShifts: string[][], sprintTrucks: stri
 //     return shifts;
 // }
 
-function isSprintTruck(sprintTrucks: string[], truckNumber: string): boolean {
-    return sprintTrucks.includes(truckNumber);
+export function isSprintTruck( truckNumber: string): boolean {
+    return SPRINT_TRUCKS.includes(truckNumber);
 }
 
 export function alreadyHasStudent(notes: string): boolean {
