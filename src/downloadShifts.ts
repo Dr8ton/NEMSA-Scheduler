@@ -8,6 +8,11 @@ const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
+export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
+    let scrape = await getHTMLFromCrewScheduler(area);
+    let scrapedShifts = scrapeShifts(scrape);
+    return scrapedShifts;
+}
 
 async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     const browser = await puppeteer.launch({ headless: true });
@@ -53,8 +58,6 @@ async function getHTMLFromCrewScheduler(region: number): Promise<string> {
         })
     ]);
 
-    const selector = '#DataGrid1 > tbody > tr';
-
     const html = await page.$eval('#DataGrid1', (element) => {
         return element.innerHTML
     })
@@ -62,8 +65,6 @@ async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     browser.close();
     return htmlAsStirng;
 }
-
-
 
 function scrapeShifts(text: string) {
     const $ = cheerio.load(text, {
@@ -84,11 +85,7 @@ function scrapeShifts(text: string) {
     return shifts;
 }
 
-export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
-    let scrape = await getHTMLFromCrewScheduler(area);
-    let scrapedShifts = scrapeShifts(scrape);
-    return scrapedShifts;
-}
+
 
 function writeNewFile(text) {
     fs.writeFile("./dist/test", text, function (err) {
@@ -101,9 +98,8 @@ function writeNewFile(text) {
   }
 
 async function main(){
-    let data = await scrapeShiftsFromCrewScheduler(9); 
-    data.forEach(element => {
-        console.log(element); 
-    });
+    let i = await scrapeShiftsFromCrewScheduler(9);
+    console.log(i);
 }
-main ();
+
+main(); 

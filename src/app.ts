@@ -21,7 +21,7 @@ async function main() {
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
 
         const scrapedShifts = await scrapeShiftsFromCrewScheduler(area.crewscheduler.region);
-        let allPossibleShifts = findUseableShifts(scrapedShifts, area.sprintTrucks);
+        let allPossibleShifts = findUseableShifts(scrapedShifts);
         let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
         let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
         //TODO: start here
