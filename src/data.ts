@@ -1,3 +1,7 @@
+
+
+
+// returned from downloadShift.scrapeShiftsFromCrewScheduler()
 export const rows = [['5258357',
     'OS',
     'CAD',

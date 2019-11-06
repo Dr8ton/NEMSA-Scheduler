@@ -8,6 +8,16 @@ const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
+/**
+ * 
+ * @param area number 
+ * @returns String[][] example = [ '5320229','OS','HA','10/31/2019 12:00:00 AM','10/31/2019 8:00:00 AM','10/31/2019 8:00:00 PM','&nbsp;','&nbsp;','&nbsp;','False','-','-','&nbsp;','&nbsp;','&nbsp;','&nbsp;','029586 Abernathy, J.','OS','Taylor, Stephanie','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','1','0','&nbsp;','&nbsp;','&nbsp;','&nbsp;' ]
+ */
+export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
+    let scrape = await getHTMLFromCrewScheduler(area);
+    let scrapedShifts = scrapeShifts(scrape);
+    return scrapedShifts;
+}
 
 async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     const browser = await puppeteer.launch({ headless: true });
@@ -53,8 +63,6 @@ async function getHTMLFromCrewScheduler(region: number): Promise<string> {
         })
     ]);
 
-    const selector = '#DataGrid1 > tbody > tr';
-
     const html = await page.$eval('#DataGrid1', (element) => {
         return element.innerHTML
     })
@@ -62,8 +70,6 @@ async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     browser.close();
     return htmlAsStirng;
 }
-
-
 
 function scrapeShifts(text: string) {
     const $ = cheerio.load(text, {
@@ -84,11 +90,7 @@ function scrapeShifts(text: string) {
     return shifts;
 }
 
-export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
-    let scrape = await getHTMLFromCrewScheduler(area);
-    let scrapedShifts = scrapeShifts(scrape);
-    return scrapedShifts;
-}
+
 
 function writeNewFile(text) {
     fs.writeFile("./dist/test", text, function (err) {
@@ -100,10 +102,3 @@ function writeNewFile(text) {
     });
   }
 
-async function main(){
-    let data = await scrapeShiftsFromCrewScheduler(9); 
-    data.forEach(element => {
-        console.log(element); 
-    });
-}
-main ();
