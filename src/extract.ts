@@ -43,12 +43,6 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
         if (alreadyHasStudent(e[6])) {
             if (medics[one] || medics[two]) {
                 return
-            } else if (emts[one]) {
-                console.log(`${e[6]} is riding with ${emts[one].firstName} ${emts[one].lastName}. Confirm this student is not above the EMT preceptors level. DATE: ${e[4]} TRUCK: ${e[10]}`);
-                return;
-            } else if (emts[two]) {
-                console.log(`${e[6]} is riding with ${emts[two].firstName} ${emts[two].lastName}. Confirm this student is not above the EMT preceptors level. DATE: ${e[4]} TRUCK: ${e[10]}`);
-                return;
             } else {
                 console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`);
                 return;
