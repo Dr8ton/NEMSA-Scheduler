@@ -8,11 +8,6 @@ const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
-/**
- * 
- * @param area number 
- * @returns String[][] example = [ '5320229','OS','HA','10/31/2019 12:00:00 AM','10/31/2019 8:00:00 AM','10/31/2019 8:00:00 PM','&nbsp;','&nbsp;','&nbsp;','False','-','-','&nbsp;','&nbsp;','&nbsp;','&nbsp;','029586 Abernathy, J.','OS','Taylor, Stephanie','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','&nbsp;','1','0','&nbsp;','&nbsp;','&nbsp;','&nbsp;' ]
- */
 export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
     let scrape = await getHTMLFromCrewScheduler(area);
     let scrapedShifts = scrapeShifts(scrape);
@@ -102,3 +97,9 @@ function writeNewFile(text) {
     });
   }
 
+async function main(){
+    let i = await scrapeShiftsFromCrewScheduler(9);
+    console.log(i);
+}
+
+main(); 
