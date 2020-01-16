@@ -237,13 +237,13 @@ describe('findUseableShifts()', () => {
         expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
     });
 
-    test('should include shifts that dont have students, are not sprint trucks, and do not have students', () => {
-        expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
+    // test('should include shifts that dont have students, are not sprint trucks, and do not have students', () => {
+    //     expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
 
 
-});
+    // });
 
 
 
 
-
+})
