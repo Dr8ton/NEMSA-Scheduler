@@ -8,12 +8,63 @@ const crew_scheduler = require('../secrets/key.json');
 
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
+/**
+ * 
+ * @param {number} area - the area that the shifts take place. 
+ * @returns {Promise<string[][]>} - resolves to an array of arrays such as: [ '5439411',
+    '319 (09hr std crew)',
+    'CAD',
+    '1/17/2020 12:00:00 AM',
+    '1/17/2020 7:30:00 AM',
+    '1/17/2020 6:00:00 PM',
+    '&nbsp;',t
+    '&nbsp;',
+    '&nbsp;',
+    'True',
+    '319',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '017059 Rhodes, A.',
+    '1',
+    'Taylor, Stephanie',
+    '&nbsp;',
+    '027676 Demoruelle, N.',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '&nbsp;',
+    '3',
+    '0',
+    '0',
+    '0',
+    '&nbsp;',
+    '&nbsp;' ]
+ */
 export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
     let scrape = await getHTMLFromCrewScheduler(area);
     let scrapedShifts = scrapeShifts(scrape);
     return scrapedShifts;
 }
 
+/**
+ * lanches puppetter and returns the HTML of the actual schedule as a string
+ * 
+ * @param region {number} - region of shitfts
+ * @returns {string} - html of table
+ */
 async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -65,6 +116,15 @@ async function getHTMLFromCrewScheduler(region: number): Promise<string> {
     browser.close();
     return htmlAsStirng;
 }
+
+
+/**
+ * scrapes the html string and returns the shfits as an array of array of individiual shifts
+ * 
+ * 
+ * @param {string} text - html as a string
+ * @returns {string[][]} - [][] of shifts 
+ */
 
 function scrapeShifts(text: string) {
     const $ = cheerio.load(text, {
