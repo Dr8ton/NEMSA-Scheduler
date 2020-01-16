@@ -9,6 +9,9 @@ const crew_scheduler = require('../secrets/key.json');
 const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCrystal.aspx?category=general';
 
 /**
+ * navigates to CrewScheduler in Puppeteer 
+ * scrapes the shifts from the table
+ * returns an [][] of shifts
  * 
  * @param {number} area - the area that the shifts take place. 
  * @returns {Promise<string[][]>} - resolves to an array of arrays such as: [ '5439411',
@@ -159,7 +162,7 @@ function writeNewFile(text) {
 
 async function main(){
     let i = await scrapeShiftsFromCrewScheduler(9);
-    console.log(i);
+    console.log(i[0]);
 }
 
 main(); 
