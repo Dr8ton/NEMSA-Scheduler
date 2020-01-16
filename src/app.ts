@@ -1,4 +1,3 @@
-import * as downloadShifts from "./downloadShifts";
 import fs from 'fs';
 import downloadsFolder from 'downloads-folder';
 import path from 'path';
@@ -7,7 +6,7 @@ import { findUseableShifts } from "./extract";
 import { clearCalendars, addShiftToCalendar } from "./cal";
 import { getAllActiveEMTPreceptors, getAllActiveParamedicPreceptors } from "./firebase";
 import { AREAS } from "./AREAS";
-import { scrapeShiftsFromCrewScheduler } from "./downloadShifts";
+import { scrapeShiftsFromCrewScheduler } from "./crewScheduler";
 import { error } from "util";
 import { Shift } from "./Shift";
 
