@@ -65,3 +65,4 @@ dist/
 
 #ignore secret files
 secrets/
+src/doc.txt
