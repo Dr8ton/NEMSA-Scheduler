@@ -27,7 +27,6 @@ async function main() {
         // clearCalendars(area.calendarIds);
         //buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
         // buildCalendar(emtShifts, area.calendarIds.emt, area.stations);
-console.log("Break");
     }
 }
 
@@ -71,7 +70,5 @@ export function isPreceptorOnShift(shift: Shift) {
     return this.includes(shift.crewOne || shift.crewTwo);
 }
 
-function getPreceptorName(id: string, preceptors: any) {
 
-}
 main();

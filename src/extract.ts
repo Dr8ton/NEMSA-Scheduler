@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Shift } from "./Shift";
 import { SPRINT_TRUCKS } from "./AREAS";
 
-export function findUseableShifts(scraptedShifts: string[][]) {
+export function findUseableShifts(scraptedShifts: object[]) {
     const shifts: Shift[] = [];
 
     scraptedShifts.forEach((e) => {
@@ -25,54 +25,54 @@ export function findUseableShifts(scraptedShifts: string[][]) {
 
 // emt branch
 
-//         if (emts[one]) {
-//             shifts.emt.push(
-//                 {
-//                     id: e[0],
-//                     crew: `${emts[one].firstName} ${emts[one].lastName}`, // TODO: format this as a name not as number. 
-//                     location: e[2],
-//                     startDTG: `${formatDTG(e[4])}`,
-//                     endDTG: `${formatDTG(e[5])}`,
-//                     truck: e[10]
-//                 });
-//         } else if (emts[two]) {
-//             shifts.emt.push(
-//                 {
-//                     id: e[0],
-//                     crew: `${emts[two].firstName} ${emts[two].lastName}`, // TODO: format this as a name not as number. 
-//                     location: e[2],
-//                     startDTG: `${formatDTG(e[4])}`,
-//                     endDTG: `${formatDTG(e[5])}`,
-//                     truck: e[10]
-//                 });
-//         }
+        if (emts[one]) {
+            shifts.emt.push(
+                {
+                    id: e[0],
+                    crew: `${emts[one].firstName} ${emts[one].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        } else if (emts[two]) {
+            shifts.emt.push(
+                {
+                    id: e[0],
+                    crew: `${emts[two].firstName} ${emts[two].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        }
 
-//         // medic branch
+        // medic branch
 
-//         if (medics[one]) {
-//             shifts.paramedic.push(
-//                 {
-//                     id: e[0],
-//                     crew: `${medics[one].firstName} ${medics[one].lastName}`, // TODO: format this as a name not as number. 
-//                     location: e[2],
-//                     startDTG: `${formatDTG(e[4])}`,
-//                     endDTG: `${formatDTG(e[5])}`,
-//                     truck: e[10]
-//                 });
-//         } else if (medics[two]) {
-//             shifts.paramedic.push(
-//                 {
-//                     id: e[0],
-//                     crew: `${medics[two].firstName} ${medics[two].lastName}`, // TODO: format this as a name not as number. 
-//                     location: e[2],
-//                     startDTG: `${formatDTG(e[4])}`,
-//                     endDTG: `${formatDTG(e[5])}`,
-//                     truck: e[10]
-//                 });
-//         }
-//     });
-//     return shifts;
-// }
+        if (medics[one]) {
+            shifts.paramedic.push(
+                {
+                    id: e[0],
+                    crew: `${medics[one].firstName} ${medics[one].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        } else if (medics[two]) {
+            shifts.paramedic.push(
+                {
+                    id: e[0],
+                    crew: `${medics[two].firstName} ${medics[two].lastName}`, // TODO: format this as a name not as number. 
+                    location: e[2],
+                    startDTG: `${formatDTG(e[4])}`,
+                    endDTG: `${formatDTG(e[5])}`,
+                    truck: e[10]
+                });
+        }
+    });
+    return shifts;
+}
 
 export function isSprintTruck( truckNumber: string): boolean {
     return SPRINT_TRUCKS.includes(truckNumber);
@@ -112,4 +112,3 @@ function timeTest(){
     console.log(now); 
 }
 
-timeTest(); 

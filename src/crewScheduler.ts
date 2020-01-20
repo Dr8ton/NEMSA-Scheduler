@@ -56,10 +56,11 @@ const generalReportURL = 'https://scheduling.acadian.com/CrewScheduler/ReportsCr
     '&nbsp;',
     '&nbsp;' ]
  */
-export async function scrapeShiftsFromCrewScheduler(area: number): Promise<string[][]> {
+export async function scrapeShiftsFromCrewScheduler(area: number): Promise<object[]> {
     let scrape = await getHTMLFromCrewScheduler(area);
     let scrapedShifts = scrapeShifts(scrape);
-    return scrapedShifts;
+    let shiftsAsObject = arrayToObjects(scrapedShifts); 
+    return shiftsAsObject;
 }
 
 /**
@@ -148,7 +149,25 @@ function scrapeShifts(text: string) {
     return shifts;
 }
 
-
+function arrayToObjects(shiftArray: string[][]){
+    
+    var objs = shiftArray.map(function(x) { 
+      return { 
+        shiftID: x[0], 
+        shiftName: x[1],
+        startTime: x[4], 
+        endTime: x[5],
+        notes: x[6],
+        truckNumber: x[10],
+        crewOne: x[15],
+        crewOneReplacement: x[16],
+        crewTwo: x[20],
+        crewTwoReplacement: x[21]
+      }; 
+    });
+    console.log(objs);
+    return objs;
+}
 
 function writeNewFile(text) {
     fs.writeFile("./dist/test", text, function (err) {
@@ -162,7 +181,6 @@ function writeNewFile(text) {
 
 async function main(){
     let i = await scrapeShiftsFromCrewScheduler(9);
-    console.log(i[0]);
 }
 
 main(); 
