@@ -3,6 +3,7 @@ require('dotenv').config();
 import puppeteer, { Browser } from 'puppeteer';
 import * as cheerio from 'cheerio';
 import fs from "fs";
+import { SPRINT_TRUCKS } from './AREAS';
 
 const crew_scheduler = require('../secrets/key.json');
 
@@ -152,9 +153,11 @@ function scrapeShifts(text: string) {
 function arrayToObjects(shiftArray: string[][]){
     
     var objs = shiftArray.map(function(x) { 
+
       return { 
-        shiftID: x[0], 
+        shiftId: x[0], 
         shiftName: x[1],
+        station: x[2],
         startTime: x[4], 
         endTime: x[5],
         notes: x[6],
