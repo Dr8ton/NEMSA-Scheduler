@@ -102,146 +102,72 @@ describe('getActualCrewMember() tests', () => {
 describe('findUseableShifts()', () => {
 
     test('It should filter out a shift if it has a sprit truck', () => {
-        let scrapped = [[
-            '5257817',
-            '221 (12hr std crew)', //sprint truck
-            'IN',
-            '9/18/2019 12:00:00 AM',
-            '9/18/2019 5:30:00 PM',
-            '9/19/2019 5:30:00 AM',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            'True',
-            '098',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '022593 Robertson, D.',
-            '1',
-            'Taylor, Stephanie',
-            '&nbsp;',
-            '022593 Robertson, D.',
-            '023205 Brock, A.',
-            '1',
-            'Taylor, Stephanie',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '3',
-            '0',
-            '0',
-            '0',
-            '&nbsp;',
-            '&nbsp;']]
+        let scrapped = [{
+            shiftID: '5439521',
+            shiftName: '221 pm (12hr Sprint)',
+            startTime: '1/22/2020 4:00:00 PM',
+            endTime: '1/23/2020 4:00:00 AM',
+            notes: '&nbsp;', //  no student
+            truckNumber: '221', // sprint truck
+            crewOne: '&nbsp;',
+            crewOneReplacement: '014898 Thomas, K.',
+            crewTwo: '&nbsp;',
+            crewTwoReplacement: '&nbsp;'
+        }]
         expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
     });
 
-    test('it should reject an Over Staff shift', () => {
-        let scrapped = [['5280780',
-            'OS', // overstaff shift
-            'SLC',
-            '9/18/2019 12:00:00 AM',
-            '9/18/2019 5:00:00 PM',
-            '9/19/2019 5:00:00 AM',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            'False',
-            '-',
-            '-',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '029056 Hemphill, P.',
-            'OS',
-            'Taylor, Stephanie',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '1',
-            '0',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;']]
+    test('it should reject an Over Staff (OS) shift', () => {
+        let scrapped = [{
+            shiftID: '5439201',
+            shiftName: 'OS',
+            startTime: '1/21/2020 5:00:00 PM',
+            endTime: '1/22/2020 5:00:00 AM',
+            notes: '&nbsp;',
+            truckNumber: '302',
+            crewOne: '023491 Bosarge, B.',
+            crewOneReplacement: '&nbsp;',
+            crewTwo: '024884 Spicuzza, C.',
+            crewTwoReplacement: '&nbsp;'
+        }]
         expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
     });
 
     test('it should reject a Shift if it already has a student', () => {
-        let scrapped = [['5257580',
-            '196: Night Odd (12hr std crew)',
-            'SLC',
-            '9/18/2019 12:00:00 AM',
-            '9/18/2019 5:00:00 PM',
-            '9/19/2019 5:00:00 AM',
-            'NOTES: CREW 3: 025784 White, M.; STUDENT/RIDER: M White MDCC #9', //already has student. 
-            'M White MDCC #9',
-            '&nbsp;',
-            'True',
-            '196',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '018313 Hopkins, K.',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '026980 Robbins, A.',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '025784 White, M.',
-            'CP',
-            'Jenkins, Markus',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '&nbsp;',
-            '4',
-            '0',
-            '0',
-            '0',
-            '0',
-            '&nbsp;']]
+        let scrapped = [{
+            shiftID: '5439169',
+            shiftName: '95:Ngt E (12hr std crew)',
+            startTime: '1/22/2020 4:00:00 PM',
+            endTime: '1/23/2020 4:00:00 AM',
+            notes:
+                'NOTES: CREW 3: 027242 Frank, J.; STUDENT/RIDER: J Frank MDCC #7',
+            truckNumber: '095',
+            crewOne: '023943 Edmonds, C.',
+            crewOneReplacement: '&nbsp;',
+            crewTwo: '026104 Sibley, R.',
+            crewTwoReplacement: '&nbsp;'
+        }]
         expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
     });
 
-    // test('should include shifts that dont have students, are not sprint trucks, and do not have students', () => {
-    //     expect(extract.findUseableShifts(scrapped)).toHaveLength(0);
+    test('should include shifts that dont have students, are not sprint trucks, and do not have students', () => {
+        let scrapped = [
+            {
+                shiftID: '5439328',
+                shiftName: 'XB718 (12hr Basic Crew)',
+                startTime: '1/22/2020 11:00:00 AM',
+                endTime: '1/22/2020 11:00:00 PM',
+                notes: 'NOTES: CS 2 gear',
+                truckNumber: 'XB718',
+                crewOne: '&nbsp;',
+                crewOneReplacement: '027634 Smith, B.',
+                crewTwo: '&nbsp;',
+                crewTwoReplacement: '029588 Blythe, A.'
+            }]
+        expect(extract.findUseableShifts(scrapped)).toHaveLength(1);
 
 
-    // });
+    });
 
 
 
