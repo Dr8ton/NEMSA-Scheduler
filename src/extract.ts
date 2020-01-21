@@ -41,61 +41,67 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
         let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
 
         if (alreadyHasStudent(e[6])) {
-            if (medics[one] || medics[two]) {
-                return
-            } else {
-                console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`);
-                return;
+
+            if (e[6].includes("EMT") || e[6].includes("emt")) {
+                if (emts[one] || emts[two]) {
+                    return
+                }
+
+                if (medics[one] || medics[two]) {
+                    return
+                } else {
+                    console.log(`${e[6]}: No Preceptor Found Date: ${e[4]} TRUCK: ${e[10]}`);
+                    return;
+                }
             }
-        }
-        // emt branch
+            // emt branch
 
-        if (emts[one]) {
-            shifts.emt.push(
-                {
-                    id: e[0],
-                    crew: `${emts[one].firstName} ${emts[one].lastName}`, // TODO: format this as a name not as number. 
-                    location: e[2],
-                    startDTG: `${formatDTG(e[4])}`,
-                    endDTG: `${formatDTG(e[5])}`,
-                    truck: e[10]
-                });
-        } else if (emts[two]) {
-            shifts.emt.push(
-                {
-                    id: e[0],
-                    crew: `${emts[two].firstName} ${emts[two].lastName}`, // TODO: format this as a name not as number. 
-                    location: e[2],
-                    startDTG: `${formatDTG(e[4])}`,
-                    endDTG: `${formatDTG(e[5])}`,
-                    truck: e[10]
-                });
-        }
+            if (emts[one]) {
+                shifts.emt.push(
+                    {
+                        id: e[0],
+                        crew: `${emts[one].firstName} ${emts[one].lastName}`, // TODO: format this as a name not as number. 
+                        location: e[2],
+                        startDTG: `${formatDTG(e[4])}`,
+                        endDTG: `${formatDTG(e[5])}`,
+                        truck: e[10]
+                    });
+            } else if (emts[two]) {
+                shifts.emt.push(
+                    {
+                        id: e[0],
+                        crew: `${emts[two].firstName} ${emts[two].lastName}`, // TODO: format this as a name not as number. 
+                        location: e[2],
+                        startDTG: `${formatDTG(e[4])}`,
+                        endDTG: `${formatDTG(e[5])}`,
+                        truck: e[10]
+                    });
+            }
 
-        // medic branch
+            // medic branch
 
-        if (medics[one]) {
-            shifts.paramedic.push(
-                {
-                    id: e[0],
-                    crew: `${medics[one].firstName} ${medics[one].lastName}`, // TODO: format this as a name not as number. 
-                    location: e[2],
-                    startDTG: `${formatDTG(e[4])}`,
-                    endDTG: `${formatDTG(e[5])}`,
-                    truck: e[10]
-                });
-        } else if (medics[two]) {
-            shifts.paramedic.push(
-                {
-                    id: e[0],
-                    crew: `${medics[two].firstName} ${medics[two].lastName}`, // TODO: format this as a name not as number. 
-                    location: e[2],
-                    startDTG: `${formatDTG(e[4])}`,
-                    endDTG: `${formatDTG(e[5])}`,
-                    truck: e[10]
-                });
-        }
-    });
+            if (medics[one]) {
+                shifts.paramedic.push(
+                    {
+                        id: e[0],
+                        crew: `${medics[one].firstName} ${medics[one].lastName}`, // TODO: format this as a name not as number. 
+                        location: e[2],
+                        startDTG: `${formatDTG(e[4])}`,
+                        endDTG: `${formatDTG(e[5])}`,
+                        truck: e[10]
+                    });
+            } else if (medics[two]) {
+                shifts.paramedic.push(
+                    {
+                        id: e[0],
+                        crew: `${medics[two].firstName} ${medics[two].lastName}`, // TODO: format this as a name not as number. 
+                        location: e[2],
+                        startDTG: `${formatDTG(e[4])}`,
+                        endDTG: `${formatDTG(e[5])}`,
+                        truck: e[10]
+                    });
+            }
+        });
     console.log(`Extraction complete`)
     return shifts;
 }
