@@ -19,6 +19,7 @@ async function main() {
 
         // TODO: use cache to save calls to DB
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
+        console
         try {
             shiftReport = await downloadReport(area);
         } catch (error) {
