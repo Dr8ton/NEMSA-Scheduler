@@ -152,7 +152,7 @@ function scrapeShifts(text: string) {
 
 function arrayToObjects(shiftArray: string[][]){
     
-    var objs = shiftArray.map(function(x) { 
+    var objs: PotentialShift[] = shiftArray.map(function(x) { 
 
       return { 
         shiftId: x[0], 

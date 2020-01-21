@@ -6,7 +6,7 @@ import { SPRINT_TRUCKS } from "./AREAS";
 export function findUseableShifts(scraptedShifts: object[]) {
     const shifts: Shift[] = [];
 
-    scraptedShifts.forEach((e) => {
+    scraptedShifts.forEach((e: PotentialShift) => {
 
         if (isSprintTruck(e.truckNumber)) { return }
         if (e.shiftName === 'OS') { return }
