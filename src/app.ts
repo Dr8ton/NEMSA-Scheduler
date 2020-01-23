@@ -24,8 +24,8 @@ async function main() {
         let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
         let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
         //TODO: start here
-        // clearCalendars(area.calendarIds);
-        //buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
+        clearCalendars(area.calendarIds);
+        buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
         // buildCalendar(emtShifts, area.calendarIds.emt, area.stations);
     }
 }
@@ -38,9 +38,9 @@ export async function buildCalendar(shifts: Shift[], calendarId: string, station
 
         let preceptor;
 
-        if (preceptor[shift.crewOne]) {
+        if (preceptors[shift.crewOne]) {
             preceptor = preceptors[shift.crewOne];
-        } else if (preceptor[shift.crewTwo]) {
+        } else if (preceptors[shift.crewTwo]) {
             preceptor = preceptors[shift.crewTwo];
         } else {
             throw new Error("unable to find preceptor after filtered for preceptors: " + error);
@@ -54,7 +54,7 @@ export async function buildCalendar(shifts: Shift[], calendarId: string, station
             "startTime": `${shift.startDTG}`,
             "endTime": `${shift.endDTG}`
         }
-        //addShiftToCalendar(eventData, calendarId);
+        addShiftToCalendar(eventData, calendarId);
     }
 }
 
