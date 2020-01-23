@@ -27,15 +27,8 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
     dataFromReport.forEach((e) => {
 
         //TODO: sprint trucks from DB
-        if (isSprintTruck(sprintTrucks, e[10])) {
-            return;
-        }
-
-
-
-        if (e[1] === 'OS') {
-            return;
-        }
+        if (isSprintTruck(sprintTrucks, e[10])) {return;}
+        if (e[1] === 'OS') {return;}
 
         let one: string = e[16] === undefined ? formatEmployeeId(e[15]) : formatEmployeeId(e[16]);
         let two: string = e[21] === undefined ? formatEmployeeId(e[20]) : formatEmployeeId(e[21]);
@@ -101,46 +94,48 @@ export function extractShifts(fileName: string, emts: object, medics: object, sp
                         truck: e[10]
                     });
             }
-        });
-    console.log(`Extraction complete`)
-    return shifts;
-}
 
-/**
- * Summary. Checks to see if the truck on shift is a sprint truck. 
- * 
- * Description. Sprint trucks are not transporting units and therefore are typically not allow to carry students. 
- * 
- * @param {string} num: truck unit number. 
- * 
- * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
- */
+            console.log(`Extraction complete`)
+            return shifts;
+        }
+    })
 
-function isSprintTruck(sprintTrucks: string[], truckNumber: string): boolean {
-    return sprintTrucks.includes(truckNumber);
-}
+    /**
+     * Summary. Checks to see if the truck on shift is a sprint truck. 
+     * 
+     * Description. Sprint trucks are not transporting units and therefore are typically not allow to carry students. 
+     * 
+     * @param {string} num: truck unit number. 
+     * 
+     * @returns {boolean} true if the truck is a sprint truck. FALSE if the truck is not a sprint truck. 
+     */
 
-//TODO: Document this function
-function alreadyHasStudent(notes: string): boolean {
-    if (notes === undefined) {
-        return false;
-    } else {
-        return notes.includes("STUDENT/RIDER:")
+    function isSprintTruck(sprintTrucks: string[], truckNumber: string): boolean {
+        return sprintTrucks.includes(truckNumber);
     }
-}
-//TODO: Document this function
 
-function formatEmployeeId(id: string): string {
-    if (id === undefined) {
-        return "";
+    //TODO: Document this function
+    function alreadyHasStudent(notes: string): boolean {
+        if (notes === undefined) {
+            return false;
+        } else {
+            return notes.includes("STUDENT/RIDER:")
+        }
     }
-    return id.slice(0, 6);
-}
-//TODO: Document this function
+    //TODO: Document this function
 
-function formatDTG(d: string) {
-    var m = moment(d);
-    var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
-    return roundUp.toISOString();
-}
+    function formatEmployeeId(id: string): string {
+        if (id === undefined) {
+            return "";
+        }
+        return id.slice(0, 6);
+    }
+    //TODO: Document this function
 
+    function formatDTG(d: string) {
+        var m = moment(d);
+        var roundUp = m.second() || m.millisecond() ? m.add(1, 'minute').startOf('minute') : m.startOf('minute');
+        return roundUp.toISOString();
+    }
+
+}

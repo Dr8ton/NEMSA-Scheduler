@@ -26,7 +26,7 @@ async function main() {
             throw new Error("unable to download shift report: " + error)
         }
 
-        let SHIFTS = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
+        let SHIFTS: any = extractShifts(shiftReport, emtPreceptors, paramedicPreceptors, area.sprintTrucks);
         clearCalendars(area.calendarIds);
         buildCalendar(SHIFTS.paramedic, area.calendarIds.paramedic, area.stations);
         buildCalendar(SHIFTS.emt, area.calendarIds.emt, area.stations);
