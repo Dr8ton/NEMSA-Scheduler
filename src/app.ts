@@ -26,7 +26,7 @@ async function main() {
         //TODO: start here
         clearCalendars(area.calendarIds);
         buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
-        // buildCalendar(emtShifts, area.calendarIds.emt, area.stations);
+        buildCalendar(emtShifts, area.calendarIds.emt, area.stations, emtPreceptors);
     }
 }
 
