@@ -28,3 +28,18 @@ Document functions: http://usejsdoc.org/index.html#block-tags
 
 //  'PlannedRes3',20, crewTwo
 //  'ActualRes3',21, replacedTwo
+
+enum Shift {
+    Id = 0,
+    ShiftName = 1,
+    StationCode = 2,
+    ShiftDate = 3,
+    StartTime = 4,
+    EndTime = 5,
+    Notes = 6,
+    TruckNumber = 10,
+    CrewOne = 15,
+    ReplacedOne = 16,
+    CrewTwo = 20,
+    ReplacedTwo = 21
+}
