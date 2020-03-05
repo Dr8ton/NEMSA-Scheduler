@@ -1994,11 +1994,3 @@ export const rows = [['5258357',
     '&nbsp;',
     '&nbsp;']
 ]
-
-function dark(d) {
-    d.forEach(element => {
-        console.log(`${element[15]} | ${element[16]} | ${element[0]} | ${element[1]} | ${element[3]}`)
-    });
-}
-
-dark(rows); 

@@ -168,22 +168,5 @@ function arrayToObjects(shiftArray: string[][]){
         crewTwoReplacement: x[21]
       }; 
     });
-    console.log(objs);
     return objs;
-}
-
-function writeNewFile(text) {
-    fs.writeFile("./dist/test", text, function (err) {
-      if (err) {
-        return console.log(err);
-      }
-  
-      console.log("The file was saved!");
-    });
-  }
-
-async function main(){
-    let i = await scrapeShiftsFromCrewScheduler(9);
-}
-
-main(); 
+} 
