@@ -19,7 +19,9 @@ export function findUseableShifts(scraptedShifts: object[]) {
 
         shifts.push(new Shift(e.shiftId, one, two, e.station, start, end, e.truckNumber, e.notes));
 
+
     });
+
     return shifts;
 }
 
