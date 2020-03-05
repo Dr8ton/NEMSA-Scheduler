@@ -24,9 +24,9 @@ async function main() {
         let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
         let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
         //TODO: start here
-        clearCalendars(area.calendarIds);
-        buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
-        buildCalendar(emtShifts, area.calendarIds.emt, area.stations, emtPreceptors);
+        // clearCalendars(area.calendarIds);
+        // buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
+        // buildCalendar(emtShifts, area.calendarIds.emt, area.stations, emtPreceptors);
     }
 }
 
@@ -67,7 +67,9 @@ export function delay(ms: number) {
 }
 
 export function isPreceptorOnShift(shift: Shift) {
-    return this.includes(shift.crewOne || shift.crewTwo);
+    let first: boolean = this.includes(shift.crewOne);
+    let second: boolean = this.includes(shift.crewTwo);
+    return (first || second);
 }
 
 
