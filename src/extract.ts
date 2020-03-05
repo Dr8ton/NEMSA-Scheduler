@@ -8,9 +8,11 @@ export function findUseableShifts(scraptedShifts: object[]) {
 
     scraptedShifts.forEach((e: PotentialShift) => {
 
-        if (isSprintTruck(e.truckNumber)) { return }
-        if (e.shiftName === 'OS') { return }
-        if (alreadyHasStudent(e.notes)) { return }
+        if (isSprintTruck(e.truckNumber))   { return }
+        if (e.shiftName === 'OS')           { return }
+        if (e.shiftName === 'os')           { return }
+        if (alreadyHasStudent(e.notes))     { return }
+        if (e.truckNumber==='-')            { return };
 
         let one: string = formatEmployeeId(getActualCrewMember(e.crewOne, e.crewOneReplacement));
         let two: string = formatEmployeeId(getActualCrewMember(e.crewTwo, e.crewTwoReplacement));
@@ -54,13 +56,6 @@ export function getActualCrewMember(original: string, replacement: string) {
     } else {
         return replacement
     }
-}
-
-function timeTest(){
-    const start = '10/31/2019 8:00:00 AM'; 
-    let m = formatDTG(start); 
-    let now = moment(); 
-    console.log(now); 
 }
 
 
