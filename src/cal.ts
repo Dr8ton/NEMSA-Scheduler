@@ -11,7 +11,6 @@ const limiter1 = new Bottleneck({
     minTime: 500
 });
 
-
 export async function clearCalendars(calendarIds) {
     let auth = authenticate();
     let calendars: string[] = Object.values(calendarIds);
@@ -47,13 +46,11 @@ function removeShiftFromCalendar(data) {
     }
 }
 
-
 export function addShiftToCalendar(data, calendarId: string) {
     //   console.log(`adding shift to Bootleneck: ${data}`)
     limiter1.schedule(() => { return addEventToCalendar(data, calendarId) }, data, calendarId);
 }
 
-//TODO: Document this function
 function addEventToCalendar(event, calId: string) {
     let auth = authenticate();
     try {
@@ -79,8 +76,6 @@ function addEventToCalendar(event, calId: string) {
     }
 }
 
-
-//TODO: Document this function
 export async function countEventsOnCalendar(calId: string): Promise<number> {
 
     let auth = authenticate();
@@ -98,7 +93,6 @@ export async function countEventsOnCalendar(calId: string): Promise<number> {
 
 }
 
-//TODO: Document this function
 function authenticate() {
     const oAuth2Client = new OAuth2(
         googleCredentials.web.client_id,
