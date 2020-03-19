@@ -25,7 +25,7 @@ async function main() {
         let allPossibleShifts = findUseableShifts(scrapedShifts);
         let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
         let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
-        //TODO: start here
+
         clearCalendars(area.calendarIds);
         buildCalendar(paramedicShifts, area.calendarIds.paramedic, area.stations, paramedicPreceptors);
         buildCalendar(emtShifts, area.calendarIds.emt, area.stations, emtPreceptors);
