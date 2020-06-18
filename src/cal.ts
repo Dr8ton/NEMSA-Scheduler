@@ -20,7 +20,8 @@ export async function clearCalendars(calendarIds) {
             var params = {
                 auth: auth,
                 calendarId: calendarId,
-                eventId: event.id,
+               // eventId: event.id,
+                eventId: event["id"],
             };
             removeShiftFromCalendar(params);
         }
