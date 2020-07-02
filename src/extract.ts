@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Shift } from "./Shift";
 import { SPRINT_TRUCKS } from "./AREAS";
 
-export function findUseableShifts(scraptedShifts: object[], allPreceptors:PreceptorList) {
+export function findUseableShifts(scraptedShifts: object[], allPreceptors: PreceptorList) {
     const shifts: Shift[] = [];
 
     scraptedShifts.forEach((e: PotentialShift) => {
@@ -62,12 +62,13 @@ export function getActualCrewMember(original: string, replacement: string) {
 }
 export function isThereAPreceptorOnThisShift(shift: PotentialShift, allPreceptors: PreceptorList) {
     let preceptorIdNumbers =  Object.keys(allPreceptors);
-    
-    let first: boolean = preceptorIdNumbers.includes(shift.crewOne);
-    let second: boolean = preceptorIdNumbers.includes(shift.crewTwo);
-    let third  : boolean = preceptorIdNumbers.includes(shift.crewOneReplacement);
-    let fourth: boolean = preceptorIdNumbers.includes(shift.crewTwoReplacement);
-    return (first || second || third || fourth);
+
+    let first: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOne));
+    let second: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewTwo));
+    let third  : boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOneReplacement));
+    let fourth: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewTwoReplacement));
+
+    if (!first || !second || !third || !fourth){console.log(`Preceptor not found: Truck ${shift.truckNumber} ${shift.startTime}`)};
 }
 
 
