@@ -3,16 +3,19 @@ import moment from 'moment';
 import { Shift } from "./Shift";
 import { SPRINT_TRUCKS } from "./AREAS";
 
-export function findUseableShifts(scraptedShifts: object[]) {
+export function findUseableShifts(scraptedShifts: object[], allPreceptors:PreceptorList) {
     const shifts: Shift[] = [];
 
     scraptedShifts.forEach((e: PotentialShift) => {
 
-        if (isSprintTruck(e.truckNumber))   { return }
-        if (e.shiftName === 'OS')           { return }
-        if (e.shiftName === 'os')           { return }
-        if (alreadyHasStudent(e.notes))     { return }
-        if (e.truckNumber==='-')            { return };
+        if (isSprintTruck(e.truckNumber)) { return }
+        if (e.shiftName === 'OS') { return }
+        if (e.shiftName === 'os') { return }
+        if (alreadyHasStudent(e.notes)) {
+            isThereAPreceptorOnThisShift(e, allPreceptors)
+            return
+        }
+        if (e.truckNumber === '-') { return };
 
         let one: string = formatEmployeeId(getActualCrewMember(e.crewOne, e.crewOneReplacement));
         let two: string = formatEmployeeId(getActualCrewMember(e.crewTwo, e.crewTwoReplacement));
@@ -27,7 +30,7 @@ export function findUseableShifts(scraptedShifts: object[]) {
     return shifts;
 }
 
-export function isSprintTruck( truckNumber: string): boolean {
+export function isSprintTruck(truckNumber: string): boolean {
     return SPRINT_TRUCKS.includes(truckNumber);
 }
 
@@ -35,7 +38,7 @@ export function alreadyHasStudent(notes: string): boolean {
     if (notes === undefined) {
         return false;
     } else {
-         return notes.includes("STUDENT/RIDER:")
+        return notes.includes("STUDENT/RIDER:")
     }
 }
 
@@ -57,5 +60,16 @@ export function getActualCrewMember(original: string, replacement: string) {
         return replacement
     }
 }
+export function isThereAPreceptorOnThisShift(shift: PotentialShift, allPreceptors: PreceptorList) {
+    let preceptorIdNumbers =  Object.keys(allPreceptors);
+    
+    let first: boolean = preceptorIdNumbers.includes(shift.crewOne);
+    let second: boolean = preceptorIdNumbers.includes(shift.crewTwo);
+    let third  : boolean = preceptorIdNumbers.includes(shift.crewOneReplacement);
+    let fourth: boolean = preceptorIdNumbers.includes(shift.crewTwoReplacement);
+    return (first || second || third || fourth);
+}
+
+
 
 
