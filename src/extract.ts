@@ -68,7 +68,8 @@ export function isThereAPreceptorOnThisShift(shift: PotentialShift, allPreceptor
     let third  : boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOneReplacement));
     let fourth: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewTwoReplacement));
 
-    if (!first || !second || !third || !fourth){console.log(`Preceptor not found: Truck ${shift.truckNumber} ${shift.startTime}`)};
+    if (first || second || third || fourth){}
+    else{console.log(`Preceptor not found: Truck ${shift.truckNumber} ${shift.startTime}`)};
 }
 
 
