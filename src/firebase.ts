@@ -46,7 +46,7 @@ export function addParamedicPreceptor(num: string, first: string, last: string, 
  * 
  * @returns {object} preceptor -    '000000': { active: true, firstName: 'jonn', lastName: 'smith' },
  */
-export async function getAllActiveEMTPreceptors(region: string) {
+export async function getAllActiveEMTPreceptors(region: string):Promise<PreceptorList> {
   let emtRef = await db.collection(region).doc('preceptors').collection('emts');
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors= {};
@@ -64,7 +64,7 @@ export async function getAllActiveEMTPreceptors(region: string) {
  * 
  * @returns {object} preceptor -    '000000': { active: true, firstName: 'jonn', lastName: 'smith' },
  */
-export async function getAllActiveParamedicPreceptors(region: string) {
+export async function getAllActiveParamedicPreceptors(region: string):Promise<PreceptorList>  {
   let emtRef = await db.collection(region).doc('preceptors').collection('paramedics');
   let activeEmts = await emtRef.where('active', '==', true).get();
   let preceptors= {};

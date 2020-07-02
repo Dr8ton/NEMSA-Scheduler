@@ -18,10 +18,10 @@ async function main() {
 
         // TODO: use cache to save calls to DB
         const [emtPreceptors, paramedicPreceptors] = await Promise.all([getAllActiveEMTPreceptors(area.name), getAllActiveParamedicPreceptors(area.name)]);
-
+        const allPreceptors = { ...emtPreceptors, ...paramedicPreceptors };
 
         const scrapedShifts = await scrapeShiftsFromCrewScheduler(area.crewscheduler.region);
-        let allPossibleShifts = findUseableShifts(scrapedShifts);
+        let allPossibleShifts = findUseableShifts(scrapedShifts, allPreceptors);
         let emtShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(emtPreceptors));
         let paramedicShifts: Shift[] = allPossibleShifts.filter(isPreceptorOnShift, Object.keys(paramedicPreceptors));
 
