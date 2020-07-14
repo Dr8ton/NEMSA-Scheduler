@@ -16,6 +16,7 @@ export function findUseableShifts(scraptedShifts: object[], allPreceptors: Prece
             return
         }
         if (e.truckNumber === '-') { return };
+        if (e.notes.includes('MDCC')) {return }
 
         let one: string = formatEmployeeId(getActualCrewMember(e.crewOne, e.crewOneReplacement));
         let two: string = formatEmployeeId(getActualCrewMember(e.crewTwo, e.crewTwoReplacement));
