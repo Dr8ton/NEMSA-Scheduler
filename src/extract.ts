@@ -16,8 +16,8 @@ export function findUseableShifts(scraptedShifts: object[], allPreceptors: Prece
             return
         }
         if (e.truckNumber === '-') { return };
-        if (e.notes.includes('MDCC')) {return }
-
+        if (e.notes.includes('MDCC')) { return }
+        if (e.station === '&nbsp;') { return }
         let one: string = formatEmployeeId(getActualCrewMember(e.crewOne, e.crewOneReplacement));
         let two: string = formatEmployeeId(getActualCrewMember(e.crewTwo, e.crewTwoReplacement));
         let start: string = formatDTG(e.startTime);
@@ -62,15 +62,15 @@ export function getActualCrewMember(original: string, replacement: string) {
     }
 }
 export function isThereAPreceptorOnThisShift(shift: PotentialShift, allPreceptors: PreceptorList) {
-    let preceptorIdNumbers =  Object.keys(allPreceptors);
+    let preceptorIdNumbers = Object.keys(allPreceptors);
 
     let first: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOne));
     let second: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewTwo));
-    let third  : boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOneReplacement));
+    let third: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewOneReplacement));
     let fourth: boolean = preceptorIdNumbers.includes(formatEmployeeId(shift.crewTwoReplacement));
 
-    if (first || second || third || fourth){}
-    else{console.log(`Preceptor not found: Truck ${shift.truckNumber} ${shift.startTime}`)};
+    if (first || second || third || fourth) { }
+    else { console.log(`Preceptor not found: Truck ${shift.truckNumber} ${shift.startTime}`) };
 }
 
 
