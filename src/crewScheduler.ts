@@ -71,7 +71,7 @@ export async function scrapeShiftsFromCrewScheduler(area: number): Promise<objec
  * @returns {string} - html of table
  */
 async function getHTMLFromCrewScheduler(region: number): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({ width: 900, height: 926 });
     await page.goto(generalReportURL);
